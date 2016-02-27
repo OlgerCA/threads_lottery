@@ -1,5 +1,5 @@
 #include <gtk/gtk.h>
-
+// linea agreagada por diego
 static void activate(GtkApplication *app, gpointer user_data) {
     GtkWidget *window;
 
