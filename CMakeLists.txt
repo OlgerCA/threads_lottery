@@ -7,7 +7,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 find_package(GTK3 REQUIRED)
 include_directories(${GTK3_INCLUDE_DIRS})
 
-set(SOURCE_FILES main.c threadWork.c threadWork.h)
+set(SOURCE_FILES main.c threadWork.c threadWork.h Thread.c LoteryScheduler.c)
 add_executable(threads_lottery ${SOURCE_FILES})
 
 set(LIBS ${LIBS} ${GTK3_LIBRARIES})

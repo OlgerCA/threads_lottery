@@ -1,6 +1,10 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include "LoteryScheduler.h"
 #include "threadWork.h"
+
 
 static void activate(GtkApplication *app, gpointer user_data) {
     GtkWidget *window;
@@ -34,3 +38,28 @@ int main(int argc, char **argv) {
 
     return status;
 }
+
+/*
+LoteryScheduler loteryScheduler;
+
+void foo(void) {
+    int i = 0;
+    long fact = 1;
+
+    while (i < 4) {
+        ++i;
+        fact *= i;
+    }
+
+    LoteryScheduler_SaveResult(&loteryScheduler,fact);
+    //LoteryScheduler_SwitchThreads(loteryScheduler);
+    LoteryScheduler_ThreadCompletes(&loteryScheduler);
+}
+
+int main(int argc, char **argv) {
+    loteryScheduler = LoteryScheduler_New(NUM_THREADS, foo);
+    LoteryScheduler_Schedule(&loteryScheduler);
+    LoteryScheduler_Free(&loteryScheduler);
+    return 0;
+}
+*/
