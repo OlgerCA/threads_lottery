@@ -1,5 +1,7 @@
 #include <gtk/gtk.h>
-// linea agreagada por diego
+#include <stdio.h>
+#include "threadWork.h"
+
 static void activate(GtkApplication *app, gpointer user_data) {
     GtkWidget *window;
 
@@ -9,9 +11,21 @@ static void activate(GtkApplication *app, gpointer user_data) {
     gtk_widget_show_all(window);
 }
 
+void updateCallback(double currentValue)
+{
+    printf("Current value is: %lf\n", currentValue);
+}
+
+void finishedCallback(double finalValue)
+{
+    printf("Final value is: %lf\n", finalValue);
+}
+
 int main(int argc, char **argv) {
     GtkApplication *app;
     int status;
+
+    // executeThreadWork(5000000, updateCallback, finishedCallback);
 
     app = gtk_application_new("org.gtk.example", G_APPLICATION_FLAGS_NONE);
     g_signal_connect (app, "activate", G_CALLBACK(activate), NULL);
