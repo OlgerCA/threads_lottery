@@ -5,7 +5,7 @@
 #include "Thread.h"
 
 typedef struct {
-    Thread* threads;
+    Thread** threads;
     long numThreads;
     long currentThread;
     double piResults[NUM_THREADS]; //fow now static

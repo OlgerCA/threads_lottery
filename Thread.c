@@ -1,19 +1,19 @@
 #include <signal.h>
 #include "Thread.h"
 
-Thread Thread_New(long threadID, void *function){
-    Thread this;
+Thread* Thread_New(long threadID, void *function){
+    Thread* this = (Thread*) (malloc(sizeof(Thread)));
     address_t sp, pc;
 
-    this.threadID = threadID;
-    this.completed = 0;
-    sp = (address_t) this.stack + STACK_SIZE - sizeof(address_t);
+    this->threadID = threadID;
+    this->completed = 0;
+    sp = (address_t) this->stack + STACK_SIZE - sizeof(address_t);
     pc = (address_t) function;
 
-    sigsetjmp(this.context,1);
-    (this.context->__jmpbuf)[JB_SP] = translate_address(sp);
-    (this.context->__jmpbuf)[JB_PC] = translate_address(pc);
-    sigemptyset(&this.context->__saved_mask); // initializes saves mask signal to empty
+    sigsetjmp(this->context,1);
+    (this->context->__jmpbuf)[JB_SP] = translate_address(sp);
+    (this->context->__jmpbuf)[JB_PC] = translate_address(pc);
+    sigemptyset(&this->context->__saved_mask); // initializes saves mask signal to empty
 
     return this;
 }

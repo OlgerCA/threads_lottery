@@ -13,7 +13,7 @@ void executeThreadWork(int numberOfUnitsOfWork, void (*updateCallback)(double), 
     for (i = 0; i < numberOfUnitsOfWork; i++) {
         lastTerm = executeUnitOfWork(i * TERMS_PER_UNIT_OF_WORK, lastTerm, &accumulatedResult);
         if (i < (numberOfUnitsOfWork - 1)) {
-            UpdateUI(threadid++ % 2, accumulatedResult, 0);
+            UpdateUI(Scheduler->currentThread,accumulatedResult, 0);
             updateCallback(accumulatedResult);
             /*UpdateUI(Scheduler->currentThread, accumulatedResult, 0);
             int percentage = 30;
@@ -52,12 +52,12 @@ void executeThreadWork2(int numberOfUnitsOfWork) {
             UpdateUI(Scheduler->currentThread, accumulatedResult, 0);
             int percentage = 30;
             if(percentage > 20){
-                int returnValue = sigsetjmp(Scheduler->threads[Scheduler->currentThread].context, 1);  //LoteryScheduler_SaveThread(&Scheduler);
+                int returnValue = sigsetjmp(Scheduler->threads[Scheduler->currentThread]->context, 1);  //LoteryScheduler_SaveThread(&Scheduler);
                 if (returnValue == 1) {
                     continue;
                 }
                 Scheduler->currentThread = 1 -Scheduler->currentThread;
-                siglongjmp(Scheduler->threads[Scheduler->currentThread].context, 1);
+                siglongjmp(Scheduler->threads[Scheduler->currentThread]->context, 1);
                 //LoteryScheduler_Schedule(Scheduler);
 
             }

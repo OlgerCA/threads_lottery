@@ -12,6 +12,8 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include "Thread_Callbacks.h"
+#include "LoteryScheduler.h"
+#include "Thread.h"
 
 #define SECOND 1000000
 #define STACK_SIZE 40096
@@ -114,14 +116,16 @@ static int currentThread = 0;
 
 void switchThreads()
 {
-    int ret_val = sigsetjmp(jbuf[currentThread],1);
-    printf("SWITCH: ret_val=%d\n", ret_val);
+    //int ret_val = sigsetjmp(jbuf[currentThread],1);
+    int ret_val = sigsetjmp(Scheduler->threads[Scheduler->currentThread]->context,1);
+    //printf("SWITCH: ret_val=%d\n", ret_val);
     if (ret_val == 1) {
         return;
     }
 
-    currentThread = 1 - currentThread;
-    siglongjmp(jbuf[currentThread],1);
+    Scheduler->currentThread = 1 - Scheduler->currentThread;
+    //siglongjmp(jbuf[currentThread],1);
+    siglongjmp(Scheduler->threads[Scheduler->currentThread]->context,1);
 }
 
 void runThread2() {
@@ -138,7 +142,10 @@ void runThread2() {
 
 int main()
 {
-    setup();
+    LoteryScheduler_Init(NUM_THREADS, runThread2);
+    Scheduler->currentThread = 0;
+    //setup();
+    siglongjmp(Scheduler->threads[Scheduler->currentThread]->context,1);
     siglongjmp(jbuf[0],1);
     return 0;
 }

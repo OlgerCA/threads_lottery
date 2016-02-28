@@ -33,6 +33,6 @@ typedef struct {
 
 
 address_t translate_address(address_t addr);
-Thread Thread_New(long threadID, void* function);
+Thread* Thread_New(long threadID, void* function);
 
 #endif //THREADS_LOTTERY_THREAD_H
