@@ -30,8 +30,8 @@ int main(int argc, char **argv) {
     GtkApplication *app;
     int status;
 
-    //setup_scheduler_timer(5000);
-    //executeThreadWork(5000000, updateCallback, finishedCallback);
+   // setup_scheduler_timer(100);
+   // executeThreadWork(5000000, updateCallback, finishedCallback);
 
     app = gtk_application_new("org.gtk.example", G_APPLICATION_FLAGS_NONE);
     g_signal_connect (app, "activate", G_CALLBACK(activate), NULL);
