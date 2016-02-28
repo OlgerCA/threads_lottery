@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "LoteryScheduler.h"
-#include "threadWork.h"
+#include "ThreadWork.h"
 
 
 static void activate(GtkApplication *app, gpointer user_data) {

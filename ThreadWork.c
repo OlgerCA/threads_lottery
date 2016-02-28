@@ -1,5 +1,5 @@
 
-#include "threadWork.h"
+#include "ThreadWork.h"
 
 #define TERMS_PER_UNIT_OF_WORK 50
 
