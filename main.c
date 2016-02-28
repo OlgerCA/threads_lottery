@@ -43,42 +43,10 @@ int main(int argc, char **argv) {
 }
  */
 
-void diediedie(int i){
-    fprintf(stdout, "%s\n", strerror(errno));
-}
 
-void foo(void) {
-    int i = 0;
-    long fact = 1;
-
-    while (i < 4) {
-        ++i;
-        fact *= i;
-        printf("thread: %ld, result: %ld \n", Scheduler->currentThread, fact);
-        int returnValue = LoteryScheduler_SaveThread(Scheduler);
-        if (returnValue == 1) {
-            continue;
-        }
-        LoteryScheduler_Schedule(Scheduler);
-    }
-
-}
-
-int main2(int argc, char **argv) {
-    //LoteryScheduler_Init(NUM_THREADS, runThread);
-    catch_signal(SIGINT,diediedie);
-    catch_signal(SIGTERM,diediedie);
-    catch_signal(SIGKILL,diediedie);
-
-    Scheduler = (LoteryScheduler*) (malloc(sizeof(LoteryScheduler)));
-    Scheduler->numThreads = NUM_THREADS;
-    Scheduler->currentThread = -1; //no current thread yet
-    Scheduler->threads = (Thread*) (malloc(NUM_THREADS * sizeof(Thread)));
-
-    Scheduler->threads[0] = Thread_New(0, runThread);
-    Scheduler->threads[1] = Thread_New(1, foo);
-
-    setup_scheduler_timer(1000);
+int main(int argc, char **argv) {
+    LoteryScheduler_Init(NUM_THREADS, runThread);
+    //setup_scheduler_timer(1000);
     LoteryScheduler_Schedule(Scheduler);
 
     return 0;

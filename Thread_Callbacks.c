@@ -2,7 +2,6 @@
 #include "UI_Callbacks.h"
 #include "LoteryScheduler.h"
 
-
 void updateCallback_expropiative(double accuResult){
     UpdateUI(Scheduler->currentThread, accuResult, 0);
 }
@@ -11,7 +10,7 @@ void updateCallback_notExpropiative(double accuResult){
     UpdateUI(Scheduler->currentThread, accuResult, 0);
     int percentage = 30;
     if(percentage > 20){
-        int returnValue = sigsetjmp(Scheduler->threads[Scheduler->currentThread]->context, 1);  //LoteryScheduler_SaveThread(&Scheduler);
+        int returnValue =  sigsetjmp(Scheduler->threads[Scheduler->currentThread]->context, 1); //LoteryScheduler_SaveThread(Scheduler);
         if (returnValue == 1) {
             return;
         }
@@ -25,12 +24,11 @@ void threadFinishedCallback(double accuResult){
 }
 
 void runThread() {
-    int numberOfUnitsOfWork = 1000000;
+    int numberOfUnitsOfWork = 10;
     void (*updateCallback)(double) = NULL;
     void (*workFinishedCallback)(double) = NULL;
-    int expropiative = 1;
+    int expropiative = 0;
     updateCallback = expropiative? updateCallback_expropiative : updateCallback_notExpropiative ;
     workFinishedCallback = threadFinishedCallback;
     executeThreadWork(numberOfUnitsOfWork,updateCallback, workFinishedCallback);
-    //executeThreadWork2(numberOfUnitsOfWork);
 }

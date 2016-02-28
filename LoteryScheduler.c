@@ -53,15 +53,11 @@ void LoteryScheduler_Schedule(LoteryScheduler* this){
     }while(this->threads[this->currentThread]->completed && completedThreads++ < this->numThreads);
 
     if(completedThreads < this->numThreads){
-        set_next_alarm();
+        //set_next_alarm();
         LoteryScheduler_ResumeThread(this);
     }else{
-        long i = this->numThreads;
-        while(i--){
-            printf("Result[%ld]: %f\n", i, this->piResults[i]);
-        }
         LoteryScheduler_Free(this);
-        exit(0);
+        //exit(0);
     }
 }
 

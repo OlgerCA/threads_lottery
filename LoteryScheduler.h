@@ -1,6 +1,7 @@
 #ifndef THREADS_LOTTERY_LOTERYSCHEDULER_H
 #define THREADS_LOTTERY_LOTERYSCHEDULER_H
-#define NUM_THREADS 2
+#define NUM_THREADS 4
+
 
 #include "Thread.h"
 
