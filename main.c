@@ -2,11 +2,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "LoteryScheduler.h"
-#include "ThreadWork.h"
+#include "Thread_Callbacks.h"
 #include "Timer.h"
+#include "LoteryScheduler.h"
+#include <errno.h>
 
-
+/*
 static void activate(GtkApplication *app, gpointer user_data) {
     GtkWidget *window;
 
@@ -30,19 +31,21 @@ int main(int argc, char **argv) {
     GtkApplication *app;
     int status;
 
-   // setup_scheduler_timer(100);
-   // executeThreadWork(5000000, updateCallback, finishedCallback);
+    setup_scheduler_timer(1000);
+    executeThreadWork(5000000, updateCallback, finishedCallback);
 
-    app = gtk_application_new("org.gtk.example", G_APPLICATION_FLAGS_NONE);
-    g_signal_connect (app, "activate", G_CALLBACK(activate), NULL);
-    status = g_application_run(G_APPLICATION (app), argc, argv);
-    g_object_unref(app);
+    //app = gtk_application_new("org.gtk.example", G_APPLICATION_FLAGS_NONE);
+    //g_signal_connect (app, "activate", G_CALLBACK(activate), NULL);
+    //status = g_application_run(G_APPLICATION (app), argc, argv);
+    //g_object_unref(app);
 
     return status;
 }
+ */
 
-/*
-LoteryScheduler loteryScheduler;
+void diediedie(int i){
+    fprintf(stdout, "%s\n", strerror(errno));
+}
 
 void foo(void) {
     int i = 0;
@@ -51,17 +54,32 @@ void foo(void) {
     while (i < 4) {
         ++i;
         fact *= i;
+        printf("thread: %ld, result: %ld \n", Scheduler->currentThread, fact);
+        int returnValue = LoteryScheduler_SaveThread(Scheduler);
+        if (returnValue == 1) {
+            continue;
+        }
+        LoteryScheduler_Schedule(Scheduler);
     }
 
-    LoteryScheduler_SaveResult(&loteryScheduler,fact);
-    //LoteryScheduler_SwitchThreads(loteryScheduler);
-    LoteryScheduler_ThreadCompletes(&loteryScheduler);
 }
 
-int main(int argc, char **argv) {
-    loteryScheduler = LoteryScheduler_New(NUM_THREADS, foo);
-    LoteryScheduler_Schedule(&loteryScheduler);
-    LoteryScheduler_Free(&loteryScheduler);
+int main2(int argc, char **argv) {
+    //LoteryScheduler_Init(NUM_THREADS, runThread);
+    catch_signal(SIGINT,diediedie);
+    catch_signal(SIGTERM,diediedie);
+    catch_signal(SIGKILL,diediedie);
+
+    Scheduler = (LoteryScheduler*) (malloc(sizeof(LoteryScheduler)));
+    Scheduler->numThreads = NUM_THREADS;
+    Scheduler->currentThread = -1; //no current thread yet
+    Scheduler->threads = (Thread*) (malloc(NUM_THREADS * sizeof(Thread)));
+
+    Scheduler->threads[0] = Thread_New(0, runThread);
+    Scheduler->threads[1] = Thread_New(1, foo);
+
+    setup_scheduler_timer(1000);
+    LoteryScheduler_Schedule(Scheduler);
+
     return 0;
 }
-*/
