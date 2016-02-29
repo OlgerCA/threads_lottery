@@ -6,6 +6,8 @@
 #include "Timer.h"
 #include "LoteryScheduler.h"
 #include <errno.h>
+#define PREEMPTIVE 1
+#define MILISECONDS 100
 
 /*
 static void activate(GtkApplication *app, gpointer user_data) {
@@ -43,11 +45,13 @@ int main(int argc, char **argv) {
 }
  */
 
-
 int main(int argc, char **argv) {
-    LoteryScheduler_Init(NUM_THREADS, runThread);
-    //setup_scheduler_timer(1000);
-    LoteryScheduler_Schedule(Scheduler);
+    LoteryScheduler_Init(NUM_THREADS, runThread, PREEMPTIVE, MILISECONDS);
 
+    int retVal = sigsetjmp(Scheduler->context, 1);
+    if (retVal == 1){
+        return 0;
+    }
+    LoteryScheduler_Schedule(Scheduler);
     return 0;
 }

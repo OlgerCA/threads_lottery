@@ -4,14 +4,18 @@
 
 #define TERMS_PER_UNIT_OF_WORK 50
 
-void executeThreadWork(int numberOfUnitsOfWork, void (*updateCallback)(double), void (*workFinishedCallback)(double)) {
+void executeThreadWork(int numberOfUnitsOfWork, void (*updateCallback)(double, double, int), void (*workFinishedCallback)(double)) {
     int i = 0;
     double accumulatedResult = 0;
     double lastTerm = 2;
+    double percentage = 0;
+    double valueOfIteration = 1 / (double) numberOfUnitsOfWork;
+
     for (i = 0; i < numberOfUnitsOfWork; i++) {
         lastTerm = executeUnitOfWork(i * TERMS_PER_UNIT_OF_WORK, lastTerm, &accumulatedResult);
+        percentage += valueOfIteration;
         if (i < (numberOfUnitsOfWork - 1)) {
-            updateCallback(accumulatedResult);
+            updateCallback(accumulatedResult, percentage, i);
         }
     }
     workFinishedCallback(accumulatedResult);
@@ -26,27 +30,4 @@ double executeUnitOfWork(int initial_n, double lastTerm, double *accumulator) {
         lastTerm = lastTerm * ((4*n*n + 4*n + 1) / (4*n*n + 10*n + 6));
     }
     return lastTerm;
-}
-
-void executeThreadWork2(int numberOfUnitsOfWork) {
-    int i = 0;
-    double accumulatedResult = 0;
-    double lastTerm = 2;
-    for (i = 0; i < numberOfUnitsOfWork; i++) {
-        lastTerm = executeUnitOfWork(i * TERMS_PER_UNIT_OF_WORK, lastTerm, &accumulatedResult);
-        if (i < (numberOfUnitsOfWork - 1)) {
-            UpdateUI(Scheduler->currentThread, accumulatedResult, 0);
-            int percentage = 30;
-            if(percentage > 20){
-                int returnValue = sigsetjmp(Scheduler->threads[Scheduler->currentThread]->context, 1);  //LoteryScheduler_SaveThread(&Scheduler);
-                if (returnValue == 1) {
-                    continue;
-                }
-                Scheduler->currentThread = 1 -Scheduler->currentThread;
-                siglongjmp(Scheduler->threads[Scheduler->currentThread]->context, 1);
-                //LoteryScheduler_Schedule(Scheduler);
-
-            }
-        }
-    }
 }

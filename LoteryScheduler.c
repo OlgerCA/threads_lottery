@@ -15,16 +15,20 @@ void LoteryScheduler_Free(LoteryScheduler* this){
 }
 
 //Creates a new Lotery Scheduler
-void LoteryScheduler_Init(long numThreads, void* function){
+void LoteryScheduler_Init(long numThreads, void* function, int preemptive, int miliseconds){
     long i = 0;
     Scheduler = (LoteryScheduler*) (malloc(sizeof(LoteryScheduler)));
     Scheduler->numThreads = numThreads;
     Scheduler->currentThread = -1; //no current thread yet
+    Scheduler->preemptive = preemptive;
 
     Scheduler->threads = (Thread **) (malloc(numThreads * sizeof(Thread*)));
 
     for (; i < numThreads; i++){
         Scheduler->threads[i] = Thread_New(i, function);
+    }
+    if(preemptive) {
+        setup_scheduler_timer(miliseconds);
     }
 }
 
@@ -36,6 +40,7 @@ int LoteryScheduler_SaveThread(LoteryScheduler* this){
 // Resumes the execution of the current thread to the last call of LoteryScheduler_SaveThread, for the same threadId
 void LoteryScheduler_ResumeThread(LoteryScheduler* this){
     siglongjmp(this->threads[this->currentThread]->context, 1);
+
 }
 
 // The main method of the scheduler, for now is first come first served. Sets the current thread to the
@@ -53,11 +58,13 @@ void LoteryScheduler_Schedule(LoteryScheduler* this){
     }while(this->threads[this->currentThread]->completed && completedThreads++ < this->numThreads);
 
     if(completedThreads < this->numThreads){
-        //set_next_alarm();
+        if(this->preemptive){
+            set_next_alarm();
+        }
         LoteryScheduler_ResumeThread(this);
     }else{
         LoteryScheduler_Free(this);
-        //exit(0);
+        LoteryScheduler_ResumesOwnContext(this);
     }
 }
 
@@ -66,18 +73,13 @@ void LoteryScheduler_ThreadCompletes(LoteryScheduler* this){
     this->threads[this->currentThread]->completed = 1;
     LoteryScheduler_Schedule(this);
 }
-/*
-// this is a test...
-void LoteryScheduler_SwitchThreads(LoteryScheduler this) {
-    int returnValue = LoteryScheduler_SaveThread(this);
-    if (returnValue == 1) {
-        return;
-    }
-    this.currentThread = (this.currentThread + 1) % NUM_THREADS; // for now is FCFS
-    LoteryScheduler_ResumeThread(this);
+
+//saves the context of the scheduler
+int LoteryScheduler_SaveOwnContext(LoteryScheduler* this){
+    return sigsetjmp(this->context, 1);
 }
-*/
-// Saves the result of the current thread
-void LoteryScheduler_SaveResult(LoteryScheduler* this, double result){
-    this->piResults[this->currentThread] = result;
+
+//saves the context of the scheduler
+void LoteryScheduler_ResumesOwnContext(LoteryScheduler* this){
+    siglongjmp(this->context, 1);
 }

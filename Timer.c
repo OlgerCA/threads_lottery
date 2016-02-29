@@ -29,7 +29,7 @@ void invoke_scheduler(int sig)
     //getchar();
     // Invoke scheduler logic
 
-    int returnValue = LoteryScheduler_SaveThread(Scheduler);
+    int returnValue = sigsetjmp(Scheduler->threads[Scheduler->currentThread]->context, 1);// LoteryScheduler_SaveThread(Scheduler);
     if (returnValue == 1) {
         return;
     }

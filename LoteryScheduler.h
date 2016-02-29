@@ -1,6 +1,6 @@
 #ifndef THREADS_LOTTERY_LOTERYSCHEDULER_H
 #define THREADS_LOTTERY_LOTERYSCHEDULER_H
-#define NUM_THREADS 4
+#define NUM_THREADS 5
 
 
 #include "Thread.h"
@@ -9,13 +9,16 @@ typedef struct {
     Thread** threads;
     long numThreads;
     long currentThread;
-    double piResults[NUM_THREADS]; //fow now static
-    int expropiative;
+    int preemptive;
+    sigjmp_buf context;
 }LoteryScheduler;
 
 extern LoteryScheduler* Scheduler;
 
-void LoteryScheduler_Init(long numThreads, void* function);
+
+int LoteryScheduler_SaveOwnContext(LoteryScheduler* this); //saves the context of the scheduler
+void LoteryScheduler_ResumesOwnContext(LoteryScheduler* this); //resumes the context of the scheduler
+void LoteryScheduler_Init(long numThreads, void* function, int expropiative, int miliseconds);
 void LoteryScheduler_Free(LoteryScheduler* this);
 int LoteryScheduler_SaveThread(LoteryScheduler* this); //saves current thread context
 void LoteryScheduler_ResumeThread(LoteryScheduler* this); //resumes current thread

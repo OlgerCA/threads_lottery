@@ -2,13 +2,14 @@
 #include "UI_Callbacks.h"
 #include "LoteryScheduler.h"
 
-void updateCallback_expropiative(double accuResult){
-    UpdateUI(Scheduler->currentThread, accuResult, 0);
+void updateCallback_preemptive(double accuResult, double percentage, int execution){
+    UpdateUI(Scheduler->currentThread, accuResult, percentage, execution);
 }
 
-void updateCallback_notExpropiative(double accuResult){
-    UpdateUI(Scheduler->currentThread, accuResult, 0);
-    int percentage = 30;
+void updateCallback_notPreemptive(double accuResult, double percentage, int execution){
+    UpdateUI(Scheduler->currentThread, accuResult, percentage,execution);
+    /*TODO calculate percentage*/
+    percentage = 30;
     if(percentage > 20){
         int returnValue =  sigsetjmp(Scheduler->threads[Scheduler->currentThread]->context, 1); //LoteryScheduler_SaveThread(Scheduler);
         if (returnValue == 1) {
@@ -18,17 +19,16 @@ void updateCallback_notExpropiative(double accuResult){
     }
 }
 
-void threadFinishedCallback(double accuResult){
-    UpdateUI(0, accuResult, 0);
+void threadFinishedCallback(double accuResult ){
+    UpdateUI(Scheduler->currentThread, accuResult, 100, -1);
     LoteryScheduler_ThreadCompletes(Scheduler);
 }
 
 void runThread() {
-    int numberOfUnitsOfWork = 10;
-    void (*updateCallback)(double) = NULL;
+    int numberOfUnitsOfWork = 100000;
+    void (*updateCallback)(double, double, int) = NULL;
     void (*workFinishedCallback)(double) = NULL;
-    int expropiative = 0;
-    updateCallback = expropiative? updateCallback_expropiative : updateCallback_notExpropiative ;
+    updateCallback = Scheduler->preemptive ? updateCallback_preemptive : updateCallback_notPreemptive ;
     workFinishedCallback = threadFinishedCallback;
     executeThreadWork(numberOfUnitsOfWork,updateCallback, workFinishedCallback);
 }
