@@ -39,13 +39,13 @@ int viewer_show() {
 		g_critical("Widget \"%s\" is missing in file %s.", TOP_WINDOW, UI_FILE);
 		return 1;
 	}
-	
+
 	/* Widgets initialization for viewer.ui - DO NOT REMOVE */
 	window_init(builder);
 	g_object_unref(builder);
 
-  /* Enter the main loop */
-  gtk_widget_show_all(window);
+	/* Enter the main loop */
+	gtk_widget_show_all(window);
 
 	return 0;
 }

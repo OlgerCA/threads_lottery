@@ -18,12 +18,12 @@ void window_init(GtkBuilder* sender) {
 /* ---------------------------------------------------------------- */
 void btStart_clicked(GtkWidget* btStart, gpointer user_data) {
 	progressbarlist_item_update(1, 3.1234567890, 0.1, 4);
-
+	
 	pid_t child = fork();
 	if (child != 0) {
 		return;
 	}
-
+	
 	LoteryScheduler_Init(NUM_THREADS, runThread, PREEMPTIVE, MILISECONDS);
 
 	int retVal = sigsetjmp(Scheduler->context, 1);
