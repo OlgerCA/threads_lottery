@@ -22,6 +22,7 @@ void updateCallback_notPreemptive(double accuResult, double percentage, int exec
 void threadFinishedCallback(double accuResult ){
     UpdateUI(Scheduler->currentThread, accuResult, 100, -1);
     LoteryScheduler_ThreadCompletes(Scheduler);
+
 }
 
 void runThread() {

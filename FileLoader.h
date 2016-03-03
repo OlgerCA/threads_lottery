@@ -8,7 +8,7 @@
 typedef struct {
     int preemptive;
     long numThreads;
-    long limit;
+    unsigned int limit;
     long* tickets;
     long* work;
 }FileLoader;

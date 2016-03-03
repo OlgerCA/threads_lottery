@@ -40,6 +40,7 @@ void progressbarlist_item_update(int id, double result, double percentage, int t
 	gtk_label_set_text(GTK_LABEL(progressbarlist_get_label(id)), label);
 	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progressbarlist_get_progressbar(id)), ptext);
 	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbarlist_get_progressbar(id)), percentage);
+
 }
 /* ---------------------------------------------------------------- */
 GObject* progressbarlist_get_label(int id) {
