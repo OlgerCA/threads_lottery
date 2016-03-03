@@ -46,6 +46,7 @@ void FileLoader_Init(char *fileName) {
             int index = 0;
             while(work != NULL && ++index < Loader->numThreads){
                 Loader->tickets[index] = strtol(work, (char **)NULL, 10);
+                work = strtok(NULL, SEPARATOR_LIST);
             }
         } else if (strcmp(token, WORK_TAG) == 0) {
             token = strtok(NULL, SEPARATOR);
@@ -53,12 +54,13 @@ void FileLoader_Init(char *fileName) {
             int index = 0;
             while(work != NULL && ++index < Loader->numThreads) {
                 Loader->work[index] = strtol(work, (char **) NULL, 10);
+                work = strtok(NULL, SEPARATOR_LIST);
             }
         } else if (strcmp(token, LIMIT_TAG) == 0) {
             token = strtok(NULL, SEPARATOR);
-            Loader->limit = strtol(token, (char **) NULL, 10);
+            Loader->limit = (unsigned int) strtol(token, (char **) NULL, 10);
         } else {
-            printf("Unknown setting");
+            printf("Unknown setting\n");
             exit(EXIT_FAILURE);
         }
     }

@@ -1,7 +1,5 @@
 #ifndef THREADS_LOTTERY_LOTERYSCHEDULER_H
 #define THREADS_LOTTERY_LOTERYSCHEDULER_H
-#define NUM_THREADS 5
-
 
 #include "Thread.h"
 
@@ -18,7 +16,7 @@ extern LoteryScheduler* Scheduler;
 
 int LoteryScheduler_SaveOwnContext(LoteryScheduler* this); //saves the context of the scheduler
 void LoteryScheduler_ResumesOwnContext(LoteryScheduler* this); //resumes the context of the scheduler
-void LoteryScheduler_Init(long numThreads, void* function, int expropiative, int miliseconds);
+void LoteryScheduler_Init(long numThreads, void* function, int preemptive, unsigned int limit, long* tickets, long* work);
 void LoteryScheduler_Free(LoteryScheduler* this);
 int LoteryScheduler_SaveThread(LoteryScheduler* this); //saves current thread context
 void LoteryScheduler_ResumeThread(LoteryScheduler* this); //resumes current thread

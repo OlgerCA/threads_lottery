@@ -24,7 +24,7 @@ typedef unsigned int address_t;
 
 typedef struct {
     long threadID;
-    int tickets;
+    long tickets;
     double percentage;
     sigjmp_buf context;
     char stack[STACK_SIZE];
@@ -33,6 +33,6 @@ typedef struct {
 
 
 address_t translate_address(address_t addr);
-Thread* Thread_New(long threadID, void* function);
+Thread* Thread_New(long threadID, void *function, long tickets);
 
 #endif //THREADS_LOTTERY_THREAD_H

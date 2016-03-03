@@ -15,7 +15,7 @@ void LoteryScheduler_Free(LoteryScheduler* this){
 }
 
 //Creates a new Lotery Scheduler
-void LoteryScheduler_Init(long numThreads, void* function, int preemptive, int miliseconds){
+void LoteryScheduler_Init(long numThreads, void* function, int preemptive, unsigned int limit, long* tickets, long* work){
     long i = 0;
     Scheduler = (LoteryScheduler*) (malloc(sizeof(LoteryScheduler)));
     Scheduler->numThreads = numThreads;
@@ -25,10 +25,10 @@ void LoteryScheduler_Init(long numThreads, void* function, int preemptive, int m
     Scheduler->threads = (Thread **) (malloc(numThreads * sizeof(Thread*)));
 
     for (; i < numThreads; i++){
-        Scheduler->threads[i] = Thread_New(i, function);
+        Scheduler->threads[i] = Thread_New(i, function, tickets[i]);
     }
     if(preemptive) {
-        setup_scheduler_timer(miliseconds);
+        setup_scheduler_timer(limit);
     }
 }
 
@@ -53,7 +53,7 @@ void LoteryScheduler_Schedule(LoteryScheduler* this){
             this->currentThread = 0;
         }else{
             //determine next thread to run
-            this->currentThread = (this->currentThread + 1) % NUM_THREADS; // for now is FCFS
+            this->currentThread = (this->currentThread + 1) % Scheduler->numThreads; // for now is FCFS
         }
     }while(this->threads[this->currentThread]->completed && completedThreads++ < this->numThreads);
 
@@ -71,6 +71,7 @@ void LoteryScheduler_Schedule(LoteryScheduler* this){
 // Sets the current thread to completed and calls LoteryScheduler_Schedule
 void LoteryScheduler_ThreadCompletes(LoteryScheduler* this){
     this->threads[this->currentThread]->completed = 1;
+//    printf("Thread completed: %ld\n", this->currentThread);
     LoteryScheduler_Schedule(this);
 }
 

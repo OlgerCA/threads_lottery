@@ -5,6 +5,7 @@
 #include "Thread_Callbacks.h"
 #include "Timer.h"
 #include "LoteryScheduler.h"
+#include "FileLoader.h"
 #include <errno.h>
 #define PREEMPTIVE 1
 #define MILISECONDS 100
@@ -45,13 +46,18 @@ int main(int argc, char **argv) {
 }
  */
 
-int main(int argc, char **argv) {
-    LoteryScheduler_Init(NUM_THREADS, runThread, PREEMPTIVE, MILISECONDS);
 
+int main(int argc, char **argv) {
+    FileLoader_Init("/home/andres/settingsFile");
+
+    LoteryScheduler_Init(Loader->numThreads, runThread, Loader->preemptive, Loader->limit, Loader->tickets, Loader->work);
+    FileLoader_Free(Loader);
+    
     int retVal = sigsetjmp(Scheduler->context, 1);
     if (retVal == 1){
         return 0;
     }
     LoteryScheduler_Schedule(Scheduler);
+    LoteryScheduler_Free(Scheduler);
     return 0;
 }

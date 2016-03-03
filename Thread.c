@@ -1,12 +1,13 @@
 #include <signal.h>
 #include "Thread.h"
 
-Thread* Thread_New(long threadID, void *function){
+Thread* Thread_New(long threadID, void *function, long tickets){
     Thread* this = (Thread*) (malloc(sizeof(Thread)));
     address_t sp, pc;
 
     this->threadID = threadID;
     this->completed = 0;
+    this->tickets = tickets;
     sp = (address_t) this->stack + STACK_SIZE - sizeof(address_t);
     pc = (address_t) function;
 
