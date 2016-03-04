@@ -25,14 +25,14 @@ void progressbarlist_init(GtkBuilder *sender, int length) {
 	}
 }
 /* ---------------------------------------------------------------- */
-void progressbarlist_item_update(int id, double result, double percentage, int tickets) {
+void progressbarlist_item_update(long id, double result, double percentage, int tickets) {
 	if (id >= progressbarlist_length) {
 		g_critical("Couldn't update item, the thread is not visible (threadid: %d)", id);
 		return;
 	}
 	
 	char* label = (char*) malloc(sizeof(char)*64);
-	sprintf(label, "Process %d (%d tickets): %3.1f%%", id, tickets, percentage);
+	sprintf(label, "Process %ld (%d tickets): %3.1f%%", id, tickets, percentage);
 	
 	char* ptext = (char*) malloc(sizeof(char)*32);
 	sprintf(ptext, "%1.15f", result);

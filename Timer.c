@@ -29,11 +29,15 @@ void invoke_scheduler(int sig)
     //getchar();
     // Invoke scheduler logic
 
-    int returnValue = sigsetjmp(Scheduler->threads[Scheduler->currentThread]->context, 1);// LoteryScheduler_SaveThread(Scheduler);
-    if (returnValue == 1) {
-        return;
+    if(Scheduler != NULL){
+        printf("thread__: %ld\n", Scheduler->currentThread);
+        int returnValue = sigsetjmp(Scheduler->threads[Scheduler->currentThread]->context, 1);// LoteryScheduler_SaveThread(Scheduler);
+        if (returnValue == 1) {
+            return;
+        }
+        LoteryScheduler_Schedule(Scheduler);
     }
-    LoteryScheduler_Schedule(Scheduler);
+
 
     //set_next_alarm(selected_quantum);
 }

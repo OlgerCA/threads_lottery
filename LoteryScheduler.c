@@ -21,6 +21,7 @@ void LoteryScheduler_Init(long numThreads, void* function, int preemptive, unsig
     Scheduler->numThreads = numThreads;
     Scheduler->currentThread = -1; //no current thread yet
     Scheduler->preemptive = preemptive;
+    Scheduler->completedThreads = 0;
 
 
     Scheduler->threads = (Thread **) (malloc(numThreads * sizeof(Thread*)));
@@ -28,9 +29,6 @@ void LoteryScheduler_Init(long numThreads, void* function, int preemptive, unsig
     for (; i < numThreads; i++){
         Scheduler->threads[i] = Thread_New(i, function, tickets[i]);
         Scheduler->playingTickets += Scheduler->threads[i]->tickets;
-    }
-    if(preemptive) {
-        setup_scheduler_timer(limit);
     }
 }
 
@@ -40,9 +38,11 @@ int LoteryScheduler_SaveThread(LoteryScheduler* this){
 }
 
 // Resumes the execution of the current thread to the last call of LoteryScheduler_SaveThread, for the same threadId
-void LoteryScheduler_ResumeThread(LoteryScheduler* this){
+void LoteryScheduler_ResumeThread(LoteryScheduler* this) {
+    if(this->preemptive){
+        set_next_alarm();
+    }
     siglongjmp(this->threads[this->currentThread]->context, 1);
-
 }
 
 // The main method of the scheduler, for now is first come first served. Sets the current thread to the
@@ -62,16 +62,13 @@ void LoteryScheduler_Schedule(LoteryScheduler* this){
         if(!this->threads[index]->completed){
             ticketSum += this->threads[index]->tickets;
             if(ticketSum > random){
-                this->currentThread = index;
                 break;
             }
         }
     }
+    this->currentThread = index;
 
-    if(this->completedThreads < this->numThreads){
-        if(this->preemptive){
-            set_next_alarm();
-        }
+    if(this->completedThreads < this->numThreads) {
         LoteryScheduler_ResumeThread(this);
     }
 }

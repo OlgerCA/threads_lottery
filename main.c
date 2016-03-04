@@ -1,12 +1,13 @@
 #include <gtk/gtk.h>
+#include <X11/Xlib.h>
 #include "Viewer.h"
 #include "LoteryScheduler.h"
 #include "Thread_Callbacks.h"
 
 /* THIS SHOULD BE REPLACED WITH INFO FROM FILE */
-//#define PREEMPTIVE 1
-//#define MILISECONDS 100
-//#define NUM_THREADS 5
+#define PREEMPTIVE 1
+#define MILISECONDS 100
+#define NUM_THREADS 5
 
 int main (int argc, char *argv[])
 {
@@ -31,8 +32,8 @@ int main (int argc, char *argv[])
 //        tickets[i] = 10 + rand() % 10000;
 //        work[i] = 50;
 //    }
-
-    /* THIS SHOULD BE REPLACED WITH INFO FROM FILE */
+//
+//    /* THIS SHOULD BE REPLACED WITH INFO FROM FILE */
 //    LoteryScheduler_Init(NUM_THREADS, runThread, PREEMPTIVE, MILISECONDS, tickets, work);
 //
 //    int retVal = sigsetjmp(Scheduler->context, 1);

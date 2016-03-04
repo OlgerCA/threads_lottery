@@ -3,11 +3,15 @@
 #include "LoteryScheduler.h"
 
 void updateCallback_preemptive(double accuResult, double percentage, int execution){
-    UpdateUI(Scheduler->currentThread, accuResult, percentage, execution);
+    int returnValue =  sigsetjmp(Scheduler->threads[Scheduler->currentThread]->context, 1); //LoteryScheduler_SaveThread(Scheduler);
+    if (returnValue == 1) {
+        return;
+    }
+    UpdateUI(Scheduler->currentThread, accuResult, percentage,execution);
+    LoteryScheduler_Schedule(Scheduler);
 }
 
 void updateCallback_notPreemptive(double accuResult, double percentage, int execution){
-    UpdateUI(Scheduler->currentThread, accuResult, percentage,execution);
     /*TODO calculate percentage*/
     percentage = 30;
     if(percentage > 20){
@@ -15,6 +19,7 @@ void updateCallback_notPreemptive(double accuResult, double percentage, int exec
         if (returnValue == 1) {
             return;
         }
+        UpdateUI(Scheduler->currentThread, accuResult, percentage,execution);
         LoteryScheduler_Schedule(Scheduler);
     }
 }
@@ -22,7 +27,6 @@ void updateCallback_notPreemptive(double accuResult, double percentage, int exec
 void threadFinishedCallback(double accuResult ){
     UpdateUI(Scheduler->currentThread, accuResult, 100, -1);
     LoteryScheduler_ThreadCompletes(Scheduler);
-
 }
 
 void runThread() {

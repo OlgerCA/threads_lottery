@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 
-#define STACK_SIZE 4096
+#define STACK_SIZE 4096 * 2
 
 #ifdef __x86_64__ // code for 64 bit Intel arch
 

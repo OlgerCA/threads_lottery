@@ -9,9 +9,9 @@
 #include "ProgressbarList.h"
 
 /* THIS SHOULD BE REPLACED WITH INFO FROM FILE */
-#define PREEMPTIVE 1
+#define PREEMPTIVE 0
 #define MILISECONDS 100
-#define NUM_THREADS 5
+#define NUM_THREADS 10
 
 /* ---------------------------------------------------------------- */
 void window_init(GtkBuilder* sender) {
@@ -21,11 +21,6 @@ void window_init(GtkBuilder* sender) {
 void btStart_clicked(GtkWidget* btStart, gpointer user_data) {
 	progressbarlist_item_update(1, 3.1234567890, 0.1, 4);
 
-	pid_t child = fork();
-	if (child != 0) {
-		return;
-	}
-
 	/* THIS SHOULD BE REPLACED WITH INFO FROM FILE */
 	int i = 0;
 	long *tickets = (long*) malloc(NUM_THREADS * sizeof(long));
@@ -34,15 +29,18 @@ void btStart_clicked(GtkWidget* btStart, gpointer user_data) {
 		tickets[i] = 10;
 		work[i] = 50;
 	}
-
+	Scheduler = NULL;
 	/* THIS SHOULD BE REPLACED WITH INFO FROM FILE */
 	LoteryScheduler_Init(NUM_THREADS, runThread, PREEMPTIVE, MILISECONDS, tickets, work);
 
 	int retVal = sigsetjmp(Scheduler->context, 1);
 	if (retVal == 1) {
+		printf("free scheduler");
+		LoteryScheduler_Free(Scheduler);
+		Scheduler = NULL;
 		return;
 	}
 	LoteryScheduler_Schedule(Scheduler);
-	LoteryScheduler_Free(Scheduler);
+
 }
 /* ---------------------------------------------------------------- */
