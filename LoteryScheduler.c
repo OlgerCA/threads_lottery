@@ -50,8 +50,12 @@ void LoteryScheduler_ResumeThread(LoteryScheduler* this){
 // frees any allocated and performs and exit(0): THIS IS BECAUSE I HAVE NOW FIGURE IT OUT HOW TO EXIT THE PROGRAM WITHOUT AN ERROR
 void LoteryScheduler_Schedule(LoteryScheduler* this){
     int index;
-    int completedThreads = 0;
     long ticketSum = 0;
+
+    if(this->completedThreads == this->numThreads){
+        LoteryScheduler_ResumesOwnContext(this);
+    }
+
     int random = rand() % this->playingTickets;
 
     for(index = 0; index < this->numThreads; index++){
@@ -64,13 +68,11 @@ void LoteryScheduler_Schedule(LoteryScheduler* this){
         }
     }
 
-    if(completedThreads < this->numThreads){
+    if(this->completedThreads < this->numThreads){
         if(this->preemptive){
             set_next_alarm();
         }
         LoteryScheduler_ResumeThread(this);
-    }else{
-        LoteryScheduler_ResumesOwnContext(this);
     }
 }
 
@@ -78,6 +80,7 @@ void LoteryScheduler_Schedule(LoteryScheduler* this){
 void LoteryScheduler_ThreadCompletes(LoteryScheduler* this){
     this->threads[this->currentThread]->completed = 1;
     printf("Thread completed: %ld\n", this->currentThread);
+    this->completedThreads++;
     this->playingTickets -= this->threads[this->currentThread]->tickets;
     LoteryScheduler_Schedule(this);
 }

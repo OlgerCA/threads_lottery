@@ -8,6 +8,7 @@ typedef struct {
     long numThreads;
     long currentThread;
     int preemptive;
+    long completedThreads;
     int playingTickets;
     sigjmp_buf context;
 }LoteryScheduler;
