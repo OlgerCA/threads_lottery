@@ -13,6 +13,10 @@ add_executable(threads_lottery ${SOURCE_FILES})
 set(LIBS ${LIBS} ${GTK3_LIBRARIES})
 target_link_libraries(threads_lottery ${LIBS})
 
+add_custom_command(TARGET threads_lottery POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/ui $<TARGET_FILE_DIR:threads_lottery>/ui)
+
 install(TARGETS threads_lottery DESTINATION bin)
 SET(CPACK_GENERATOR "TGZ")
 include(CPack)

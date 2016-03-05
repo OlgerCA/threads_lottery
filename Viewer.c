@@ -8,7 +8,7 @@
 #include "Viewer.h"
 #include "Viewer.callbacks.h"
 
-#define UI_FILE "/home/andres/Operativos Avanzados/threads_lottery/viewer.ui"
+#define UI_FILE "ui/viewer.ui"
 #define TOP_WINDOW "window"
 
 GApplication* viewer_new() {
