@@ -44,17 +44,19 @@ void FileLoader_Init(char *fileName) {
             token = strtok(NULL, SEPARATOR);
             char *work = strtok(token, SEPARATOR_LIST);
             int index = 0;
-            while(work != NULL && ++index < Loader->numThreads){
+            while(work != NULL && index < Loader->numThreads){
                 Loader->tickets[index] = strtol(work, (char **)NULL, 10);
                 work = strtok(NULL, SEPARATOR_LIST);
+                index++;
             }
         } else if (strcmp(token, WORK_TAG) == 0) {
             token = strtok(NULL, SEPARATOR);
             char *work = strtok(token, SEPARATOR_LIST);
             int index = 0;
-            while(work != NULL && ++index < Loader->numThreads) {
+            while(work != NULL && index < Loader->numThreads) {
                 Loader->work[index] = strtol(work, (char **) NULL, 10);
                 work = strtok(NULL, SEPARATOR_LIST);
+                index++;
             }
         } else if (strcmp(token, LIMIT_TAG) == 0) {
             token = strtok(NULL, SEPARATOR);
