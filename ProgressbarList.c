@@ -25,22 +25,24 @@ void progressbarlist_init(GtkBuilder *sender, int length) {
 	}
 }
 /* ---------------------------------------------------------------- */
-void progressbarlist_item_update(long id, double result, double percentage, int tickets) {
+void progressbarlist_item_update(int id, double result, double percentage, int tickets) {
 	if (id >= progressbarlist_length) {
 		g_critical("Couldn't update item, the thread is not visible (threadid: %d)", id);
 		return;
 	}
 	
 	char* label = (char*) malloc(sizeof(char)*64);
-	sprintf(label, "Process %ld (%d tickets): %3.1f%%", id, tickets, percentage);
+	sprintf(label, "Process %i (%d tickets): %3.1f%%", id, tickets, percentage);
 	
 	char* ptext = (char*) malloc(sizeof(char)*32);
 	sprintf(ptext, "%1.15f", result);
 	
 	gtk_label_set_text(GTK_LABEL(progressbarlist_get_label(id)), label);
-	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progressbarlist_get_progressbar(id)), ptext);
-	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbarlist_get_progressbar(id)), percentage);
+	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progressbarlist_get_progressbar(id)), label);
+	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbarlist_get_progressbar(id)), 0.3);
 
+	free(label);
+	free(ptext);
 }
 /* ---------------------------------------------------------------- */
 GObject* progressbarlist_get_label(int id) {
