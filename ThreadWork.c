@@ -1,8 +1,10 @@
-
+#include <signal.h>
 #include "ThreadWork.h"
 #include "LoteryScheduler.h"
 
 #define TERMS_PER_UNIT_OF_WORK 50
+
+
 
 void executeThreadWork(int numberOfUnitsOfWork, void (*updateCallback)(double, double, int), void (*workFinishedCallback)(double)) {
     int i = 0;
@@ -12,11 +14,13 @@ void executeThreadWork(int numberOfUnitsOfWork, void (*updateCallback)(double, d
     double iterationValue = 1 / (double) numberOfUnitsOfWork;
 
     for (i = 0; i < numberOfUnitsOfWork; i++) {
+        sigprocmask (SIG_BLOCK, &Scheduler->block_alarm, &Scheduler->oldmask);
         lastTerm = executeUnitOfWork(i * TERMS_PER_UNIT_OF_WORK, lastTerm, &accumulatedResult);
         percentage += iterationValue;
         if (i < (numberOfUnitsOfWork - 1)) {
             updateCallback(accumulatedResult, percentage, i);
         }
+        sigprocmask (SIG_UNBLOCK, &Scheduler->block_alarm, &Scheduler->oldmask);
     }
     workFinishedCallback(accumulatedResult);
 }

@@ -12,6 +12,8 @@ typedef struct {
     int playingTickets;
     double yieldPercentage;
     sigjmp_buf context;
+    sigset_t block_alarm;
+    sigset_t oldmask;
     int scheduleComplete;
 }LoteryScheduler;
 

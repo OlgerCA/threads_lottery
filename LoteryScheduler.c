@@ -1,4 +1,5 @@
 #include <time.h>
+#include <signal.h>
 #include "LoteryScheduler.h"
 #include "Timer.h"
 #include "FileLoader.h"
@@ -30,6 +31,8 @@ void LoteryScheduler_Init(long numThreads, void* function, int preemptive, unsig
     Scheduler->playingTickets = 0;
     srand((unsigned int)time(NULL));
     setup_scheduler_timer(quantum);
+    sigemptyset (&Scheduler->block_alarm);
+    sigaddset (&Scheduler->block_alarm, SIGALRM);
 
     Scheduler->threads = (Thread **) (malloc(numThreads * sizeof(Thread*)));
 
@@ -49,10 +52,7 @@ void LoteryScheduler_ResumeThread(LoteryScheduler* this) {
     if(this->preemptive){
         set_next_alarm();
     }
-    if(Scheduler->scheduleComplete == 1){
-        siglongjmp(this->threads[this->currentThread]->context, 1);
-    }
-
+    siglongjmp(this->threads[this->currentThread]->context, 1);
 }
 
 // The main method of the scheduler
@@ -71,7 +71,7 @@ void LoteryScheduler_Schedule(LoteryScheduler* this){
         }
     }
 
-    int random = rand() % this->playingTickets;
+    /*int random = rand() % this->playingTickets;
 
     for(index = 0; index < this->numThreads; index++){
         if(!this->threads[index]->completed){
@@ -81,8 +81,9 @@ void LoteryScheduler_Schedule(LoteryScheduler* this){
             }
         }
     }
-    this->currentThread = index;
-    Scheduler->scheduleComplete = 1;
+    this->currentThread = index;*/
+    this->currentThread = (this->currentThread + 1) % this->numThreads; //REMOVE
+
     if(this->completedThreads < this->numThreads) {
         LoteryScheduler_ResumeThread(this);
     }

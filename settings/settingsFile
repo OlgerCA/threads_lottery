@@ -1,6 +1,6 @@
-preemptive:0
-numThreads:5
-tickets:1,1,1,1,1,1,1,1,1,100
-work:10,100,1000,10000,2000,10,1000,10,100,1000000
-quantum:100
+type:1
+numThreads:2
+tickets:1,1
+work:100,100
+quantum:10000
 yieldPercentage:0.035
