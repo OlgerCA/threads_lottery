@@ -1,4 +1,4 @@
-type:0
+preemptive:0
 numThreads:5
 tickets:100,100,100,100,100
 work:5000000,5000000,5000000,5000000,5000000

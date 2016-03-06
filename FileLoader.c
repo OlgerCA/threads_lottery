@@ -4,7 +4,7 @@ const char *SEPARATOR = ":";
 
 const char *SEPARATOR_LIST = ",";
 
-const char *TYPE_TAG = "type";
+const char *PREEMPTIVE_TAG = "preemptive";
 const char *NUM_THREADS_TAG = "numThreads";
 const char *TICKETS_TAG = "tickets";
 const char *WORK_TAG = "work";
@@ -26,6 +26,24 @@ int startsWith(const char *pre, const char *str)
     return lenstr < lenpre ? 0 : strncmp(pre, str, lenpre) == 0;
 }
 
+void FileLoader_DebugPrint(){
+    printf("DEBUG FILE LOADER\n");
+    printf("preemptive: %d\n", Loader->preemptive);
+    printf("numThreads: %ld\n", Loader->numThreads);
+    printf("quantum: %d\n", Loader->quantum);
+    printf("yieldPercentage: %lf\n", Loader->yieldPercentage);
+    int i;
+    printf("work: ");
+    for(i = 0; i < Loader->numThreads; i++){
+        printf("%ld, ", Loader->work[i]);
+    }
+    printf("\ntickets: ");
+    for(i = 0; i < Loader->numThreads; i++){
+        printf("%ld, ", Loader->tickets[i]);
+    }
+    printf("\n");
+}
+
 //Creates a new File Loader
 void FileLoader_Init(char *fileName) {
     Loader = (FileLoader*) (malloc(sizeof(FileLoader)));
@@ -43,7 +61,7 @@ void FileLoader_Init(char *fileName) {
         if(startsWith(COMMENT_TAG, token)){
             break;
         }
-        else if (strcmp(token, TYPE_TAG) == 0) {
+        else if (strcmp(token, PREEMPTIVE_TAG) == 0) {
             token = strtok(NULL, SEPARATOR);
             Loader->preemptive = (int) strtol(token, (char **)NULL, 10);
         } else if (strcmp(token, NUM_THREADS_TAG) == 0) {

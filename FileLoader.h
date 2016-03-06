@@ -19,6 +19,7 @@ FileLoader* Loader;
 
 
 void FileLoader_Free(FileLoader* this);
+void FileLoader_DebugPrint();
 void FileLoader_Init(char *fileName);
 
 #endif //THREADS_LOTTERY_FILELOADER_H
