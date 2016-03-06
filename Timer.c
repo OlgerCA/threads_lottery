@@ -25,21 +25,10 @@ int catch_signal(int sig,void(*handler)(int))
 
 void invoke_scheduler(int sig)
 {
-    puts("Invoking Scheduler...");
-    //getchar();
-    // Invoke scheduler logic
-
-    if(Scheduler != NULL){
-        printf("thread__: %ld\n", Scheduler->currentThread);
-        int returnValue = sigsetjmp(Scheduler->threads[Scheduler->currentThread]->context, 1);// LoteryScheduler_SaveThread(Scheduler);
-        if (returnValue == 1) {
-            return;
-        }
+    if(Scheduler){
+        printf("Thread__: %ld might be preemted\n", Scheduler->currentThread);
         LoteryScheduler_Schedule(Scheduler);
     }
-
-
-    //set_next_alarm(selected_quantum);
 }
 
 void set_next_alarm() {

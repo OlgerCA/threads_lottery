@@ -20,7 +20,7 @@ void FileLoader_Free(FileLoader *this) {
 //Creates a new File Loader
 void FileLoader_Init(char *fileName) {
     Loader = (FileLoader*) (malloc(sizeof(FileLoader)));
-
+    Loader->yieldPercentage = 5; // TODO, read this value from file
     FILE *settingsFile = fopen(fileName, "r");
     char *line = NULL;
     size_t len = 0;
@@ -60,7 +60,7 @@ void FileLoader_Init(char *fileName) {
             }
         } else if (strcmp(token, LIMIT_TAG) == 0) {
             token = strtok(NULL, SEPARATOR);
-            Loader->limit = (unsigned int) strtol(token, (char **) NULL, 10);
+            Loader->quantum = (unsigned int) strtol(token, (char **) NULL, 10);
         } else {
             printf("Unknown setting\n");
             exit(EXIT_FAILURE);

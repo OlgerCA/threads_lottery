@@ -1,8 +1,7 @@
 #include "UI_Callbacks.h"
 #include "ProgressbarList.h"
 
-void UpdateUI(long threadID, double accuResult, double percentage, int execution) {
-    printf("ThreadID: %ld , result: %f percentage: %f execution: %d\n", threadID, accuResult, percentage, execution);
-
+void UpdateUI(long threadID, double accuResult, double percentage, int iteration) {
+    printf("ThreadID: %ld , result: percentage: iteration: %d\n", threadID, iteration);
 	//progressbarlist_item_update(threadID, accuResult, percentage, 1);
 }

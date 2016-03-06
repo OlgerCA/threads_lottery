@@ -8,7 +8,8 @@
 typedef struct {
     int preemptive;
     long numThreads;
-    unsigned int limit;
+    unsigned int quantum;
+    double yieldPercentage;
     long* tickets;
     long* work;
 }FileLoader;

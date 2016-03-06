@@ -1,13 +1,15 @@
 #include <signal.h>
 #include "Thread.h"
 
-Thread* Thread_New(long threadID, void *function, long tickets){
+Thread* Thread_New(long threadID, void *function, long tickets, long work, double yieldPercentage){
     Thread* this = (Thread*) (malloc(sizeof(Thread)));
     address_t sp, pc;
 
     this->threadID = threadID;
     this->completed = 0;
     this->tickets = tickets;
+    this->work = work;
+    this->yieldPercentage = yieldPercentage;
 
     sp = (address_t) this->stack + STACK_SIZE - sizeof(address_t);
     pc = (address_t) function;

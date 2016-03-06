@@ -7,6 +7,5 @@ void executeThreadWork(int numberOfUnitsOfWork, void (*updateCallback)(double, d
 
 double executeUnitOfWork(int initial_n, double lastTerm, double *accumulator);
 
-void executeThreadWork2(int numberOfUnitsOfWork);
 
 #endif
