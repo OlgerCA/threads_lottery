@@ -1,7 +1,6 @@
 #include <time.h>
 #include "LoteryScheduler.h"
 #include "Timer.h"
-#include "FileLoader.h"
 
 LoteryScheduler* Scheduler;
 
@@ -13,8 +12,6 @@ void LoteryScheduler_Free(LoteryScheduler* this){
     }
     free(this->threads);
     free(this);
-    if(Loader)
-        FileLoader_Free(Loader);
 }
 
 //Creates a new Lotery Scheduler

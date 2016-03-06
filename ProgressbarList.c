@@ -1,16 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <gtk/gtk.h>
 #include "ProgressbarList.h"
 
 /* Global variables ----------------------------------------------- */
-GtkBuilder* progressbarlist_builder = NULL;
+GtkBuilder* Builder = NULL;
 int progressbarlist_length = 0;
 
 /* ---------------------------------------------------------------- */
 void progressbarlist_init(GtkBuilder *sender, int length) {
-	progressbarlist_builder = g_object_ref(sender);
+	Builder = g_object_ref(sender);
 	
 	if (length > 10) {
 		g_critical("The max capacity for visible threads is 10 (requested: %d)", length);
@@ -32,13 +31,12 @@ void progressbarlist_item_update(int id, double result, double percentage, int t
 	}
 	
 	char* label = (char*) malloc(sizeof(char)*64);
-	sprintf(label, "Process %i (%d tickets): %3.1f%%, Pi = %lf ", id, tickets, percentage * 100, result);
+	snprintf(label, 63, "Process %i (%d tickets): %3.1f%%, Pi = %lf ", id, tickets, percentage * 100, result);
 	
 	char* ptext = (char*) malloc(sizeof(char)*32);
-	sprintf(ptext, "%1.15f", result);
+	snprintf(ptext, 31, "%1.15f", result);
 	
 	gtk_label_set_text(GTK_LABEL(progressbarlist_get_label(id)), label);
-	// gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progressbarlist_get_progressbar(id)), label);
 	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbarlist_get_progressbar(id)), percentage);
 
 	free(label);
@@ -53,7 +51,7 @@ GObject* progressbarlist_get_label(int id) {
 	
 	char* name = (char*) malloc(sizeof(char)*8);
 	sprintf(name, "label_%d", id);
-	return gtk_builder_get_object(progressbarlist_builder, name);
+	return gtk_builder_get_object(Builder, name);
 }
 /* ---------------------------------------------------------------- */
 GObject* progressbarlist_get_progressbar(int id) {
@@ -64,6 +62,6 @@ GObject* progressbarlist_get_progressbar(int id) {
 	
 	char* name = (char*) malloc(sizeof(char)*16);
 	sprintf(name, "progressbar_%d", id);
-	return gtk_builder_get_object(progressbarlist_builder, name);
+	return gtk_builder_get_object(Builder, name);
 }
 /* ---------------------------------------------------------------- */

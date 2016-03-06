@@ -9,16 +9,9 @@
 #include "SharedState.h"
 
 void* startBackgroundTask(void* parameters) {
-    LoteryScheduler_Init(Loader->numThreads, runThread, Loader->preemptive, Loader->quantum, Loader->yieldPercentage, Loader->tickets, Loader->work);
-
     int retVal = sigsetjmp(Scheduler->context, 1);
-    if (retVal == 1) {
-        // TODO free memory after UI has stopped updating values
-        //printf("\n\n////////////////////////////////free scheduler//////////////////////////\n\n");
-        //LoteryScheduler_Free(Scheduler);
-        //Scheduler = NULL;
+    if (retVal == 1)
         pthread_exit((void *) 0);
-    }
     LoteryScheduler_Schedule(Scheduler);
     pthread_exit((void *) 0);
 }
@@ -26,11 +19,22 @@ void* startBackgroundTask(void* parameters) {
 gboolean update_function(gpointer data) {
     int i;
     ThreadEntry* entry = NULL;
+    gboolean allFinished = true;
     for (i = 0; i < Scheduler->numThreads; i++) {
         entry = &SharedState[i];
+        if (entry->percentage != 1)
+            allFinished = false;
         progressbarlist_item_update(i, entry->accuResult, entry->percentage, (int) Scheduler->threads[i]->tickets);
     }
-    return true;
+    if (allFinished) {
+        free(SharedState);
+        SharedState = NULL;
+        GtkWidget* button = GTK_WIDGET(gtk_builder_get_object(Builder, "btStart"));
+        gtk_widget_set_sensitive(button, true);
+        return false;
+    }
+    else
+        return true;
 }
 
 void file_loader(GtkBuilder* sender) {
@@ -54,10 +58,6 @@ void file_loader(GtkBuilder* sender) {
         GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
         filename = gtk_file_chooser_get_filename (chooser);
         FileLoader_Init(filename);
-        if (SharedState != NULL)
-            free(SharedState);
-        SharedState = (ThreadEntry*) malloc(sizeof(ThreadEntry) * Loader->numThreads);
-        // TODO free when all is finished
         g_free (filename);
     }
 
@@ -67,11 +67,27 @@ void file_loader(GtkBuilder* sender) {
 /* ---------------------------------------------------------------- */
 void window_init(GtkBuilder* sender) {
     file_loader(sender);
-	progressbarlist_init(sender, Loader->numThreads);
+	progressbarlist_init(sender, (int) Loader->numThreads);
 }
 /* ---------------------------------------------------------------- */
 void btStart_clicked(GtkWidget* btStart, gpointer user_data) {
-    g_timeout_add(1000, update_function, NULL);
+    if (SharedState != NULL) {
+        free(SharedState);
+        SharedState = NULL;
+    }
+    SharedState = (ThreadEntry*) malloc(sizeof(ThreadEntry) * Loader->numThreads);
+
+    if (Scheduler != NULL) {
+        LoteryScheduler_Free(Scheduler);
+        Scheduler = NULL;
+    }
+    LoteryScheduler_Init(Loader->numThreads, runThread, Loader->preemptive, Loader->quantum,
+                         Loader->yieldPercentage, Loader->tickets, Loader->work);
+
+    GtkWidget* button = GTK_WIDGET(gtk_builder_get_object(Builder, "btStart"));
+    gtk_widget_set_sensitive(button, false);
+
+    g_timeout_add(100, update_function, NULL);
 
     pthread_t backgroundThread;
     pthread_attr_t attr;

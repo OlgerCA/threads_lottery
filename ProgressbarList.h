@@ -6,6 +6,7 @@
 void progressbarlist_init(GtkBuilder* builder, int length);
 void progressbarlist_item_update(int id, double result, double percentage, int tickets);
 
+extern GtkBuilder*Builder;
 GObject* progressbarlist_get_label(int id);
 GObject* progressbarlist_get_progressbar(int id);
 

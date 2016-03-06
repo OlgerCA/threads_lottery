@@ -15,6 +15,18 @@ int main (int argc, char *argv[])
 
     gtk_main();
 
-    return 0;
+    if (SharedState != NULL) {
+        free(SharedState);
+        SharedState = NULL;
+    }
+    if (Scheduler != NULL) {
+        LoteryScheduler_Free(Scheduler);
+        Scheduler = NULL;
+    }
+    if(Loader !=  NULL) {
+        FileLoader_Free(Loader);
+        Loader = NULL;
+    }
 
+    return 0;
 }
