@@ -20,7 +20,7 @@ extern LoteryScheduler* Scheduler;
 
 int LoteryScheduler_SaveOwnContext(LoteryScheduler* this); //saves the context of the scheduler
 void LoteryScheduler_ResumesOwnContext(LoteryScheduler* this); //resumes the context of the scheduler
-void LoteryScheduler_Init(long numThreads, void* function, int preemptive, unsigned int quantum, double yiedlPercentage, long* tickets, long* work);
+void LoteryScheduler_Init(long numThreads, void* function, int preemptive, double yiedlPercentage, long* tickets, long* work);
 void LoteryScheduler_Free(LoteryScheduler* this);
 int LoteryScheduler_SaveThread(LoteryScheduler* this); //saves current thread context
 void LoteryScheduler_ResumeThread(LoteryScheduler* this); //resumes current thread

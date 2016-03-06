@@ -14,7 +14,6 @@ void updateCallback_preemptive(double accuResult, double percentage, int iterati
 
 void updateCallback_notPreemptive(double accuResult, double percentage, int iteration){
     updateSharedState(Scheduler->currentThread, accuResult, percentage, iteration);
-    // if currentPercentage  >  thread->yieldPercentage
     if(percentage >= Scheduler->threads[Scheduler->currentThread]->yieldPercentage){
         Scheduler->threads[Scheduler->currentThread]->yieldPercentage += Scheduler->yieldPercentage;
         LoteryScheduler_Schedule(Scheduler);

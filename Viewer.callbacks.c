@@ -7,8 +7,11 @@
 #include "ProgressbarList.h"
 #include "FileLoader.h"
 #include "SharedState.h"
+#include "Timer.h"
 
 void* startBackgroundTask(void* parameters) {
+    if (Scheduler->preemptive)
+        setup_scheduler_timer(Loader->quantum);
     int retVal = sigsetjmp(Scheduler->context, 1);
     if (retVal == 1)
         pthread_exit((void *) 0);
@@ -76,12 +79,18 @@ void btStart_clicked(GtkWidget* btStart, gpointer user_data) {
         SharedState = NULL;
     }
     SharedState = (ThreadEntry*) malloc(sizeof(ThreadEntry) * Loader->numThreads);
+    int i;
+    for (i = 0; i < Loader->numThreads; i++) {
+        SharedState[i].percentage = 0.0;
+        SharedState[i].accuResult = 0.0;
+        SharedState[i].iteration = 0;
+    }
 
     if (Scheduler != NULL) {
         LoteryScheduler_Free(Scheduler);
         Scheduler = NULL;
     }
-    LoteryScheduler_Init(Loader->numThreads, runThread, Loader->preemptive, Loader->quantum,
+    LoteryScheduler_Init(Loader->numThreads, runThread, Loader->preemptive,
                          Loader->yieldPercentage, Loader->tickets, Loader->work);
 
     GtkWidget* button = GTK_WIDGET(gtk_builder_get_object(Builder, "btStart"));

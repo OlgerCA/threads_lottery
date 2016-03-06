@@ -15,7 +15,7 @@ void LoteryScheduler_Free(LoteryScheduler* this){
 }
 
 //Creates a new Lotery Scheduler
-void LoteryScheduler_Init(long numThreads, void* function, int preemptive, unsigned int quantum, double yiedlPercentage, long* tickets, long* work){
+void LoteryScheduler_Init(long numThreads, void* function, int preemptive, double yiedlPercentage, long* tickets, long* work){
     long i = 0;
     Scheduler = (LoteryScheduler*) (malloc(sizeof(LoteryScheduler)));
     Scheduler->scheduleComplete = 0;
@@ -26,7 +26,6 @@ void LoteryScheduler_Init(long numThreads, void* function, int preemptive, unsig
     Scheduler->yieldPercentage = yiedlPercentage;
     Scheduler->playingTickets = 0;
     srand((unsigned int)time(NULL));
-    setup_scheduler_timer(quantum);
 
     Scheduler->threads = (Thread **) (malloc(numThreads * sizeof(Thread*)));
 
