@@ -54,6 +54,10 @@ void file_loader(GtkBuilder* sender) {
         GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
         filename = gtk_file_chooser_get_filename (chooser);
         FileLoader_Init(filename);
+        if (SharedState != NULL)
+            free(SharedState);
+        SharedState = (ThreadEntry*) malloc(sizeof(ThreadEntry) * Loader->numThreads);
+        // TODO free when all is finished
         g_free (filename);
     }
 
