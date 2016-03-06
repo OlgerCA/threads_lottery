@@ -6,8 +6,6 @@
 
 int main (int argc, char *argv[])
 {
-    //initialize random seed:
-    srand((unsigned int)time(NULL));
     FileLoader_Init("settingsFile"); // copy settings file to output folder
 
     //Initialize GTK+
