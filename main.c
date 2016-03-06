@@ -1,5 +1,4 @@
 #include <gtk/gtk.h>
-#include <X11/Xlib.h>
 #include "Viewer.h"
 #include "LoteryScheduler.h"
 #include "FileLoader.h"

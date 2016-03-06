@@ -14,10 +14,10 @@ add_executable(threads_lottery ${SOURCE_FILES})
 set(LIBS ${LIBS} ${GTK3_LIBRARIES} Threads::Threads)
 target_link_libraries(threads_lottery ${LIBS})
 
-add_custom_command(TARGET threads_lottery POST_BUILD
+add_custom_command(TARGET threads_lottery PRE_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/ui $<TARGET_FILE_DIR:threads_lottery>/ui)
-add_custom_command(TARGET threads_lottery POST_BUILD
+add_custom_command(TARGET threads_lottery PRE_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/settings $<TARGET_FILE_DIR:threads_lottery>/settings)
 
