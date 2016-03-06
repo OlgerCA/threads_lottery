@@ -19,8 +19,6 @@ void LoteryScheduler_Free(LoteryScheduler* this){
 
 //Creates a new Lotery Scheduler
 void LoteryScheduler_Init(long numThreads, void* function, int preemptive, unsigned int quantum, double yiedlPercentage, long* tickets, long* work){
-    FileLoader_DebugPrint();
-    printf("init\n");
     long i = 0;
     Scheduler = (LoteryScheduler*) (malloc(sizeof(LoteryScheduler)));
     Scheduler->scheduleComplete = 0;
@@ -39,7 +37,6 @@ void LoteryScheduler_Init(long numThreads, void* function, int preemptive, unsig
         Scheduler->threads[i] = Thread_New(i, function, tickets[i], work[i], yiedlPercentage);
         Scheduler->playingTickets += Scheduler->threads[i]->tickets;
     }
-    printf("done_init\n");
 }
 
 // Saves the current thread context
@@ -60,7 +57,6 @@ void LoteryScheduler_ResumeThread(LoteryScheduler* this) {
 
 // The main method of the scheduler
 void LoteryScheduler_Schedule(LoteryScheduler* this){
-    printf("scheduling\n");
     int index;
     long ticketSum = 0;
 
@@ -87,7 +83,6 @@ void LoteryScheduler_Schedule(LoteryScheduler* this){
     }
     this->currentThread = index;
     Scheduler->scheduleComplete = 1;
-    printf("done_scheduling\n");
     if(this->completedThreads < this->numThreads) {
         LoteryScheduler_ResumeThread(this);
     }
