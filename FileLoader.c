@@ -8,7 +8,9 @@ const char *TYPE_TAG = "type";
 const char *NUM_THREADS_TAG = "numThreads";
 const char *TICKETS_TAG = "tickets";
 const char *WORK_TAG = "work";
-const char *LIMIT_TAG = "limit";
+const char *QUANTUM_TAG = "quantum";
+const char *PERCENTAGE_TAG = "yieldPercentage";
+const char *COMMENT_TAG = "//";
 
 //Free any allocated memory of the File Loader
 void FileLoader_Free(FileLoader *this) {
@@ -17,10 +19,16 @@ void FileLoader_Free(FileLoader *this) {
     free(this);
 }
 
+int startsWith(const char *pre, const char *str)
+{
+    size_t lenpre = strlen(pre);
+    size_t lenstr = strlen(str);
+    return lenstr < lenpre ? 0 : strncmp(pre, str, lenpre) == 0;
+}
+
 //Creates a new File Loader
 void FileLoader_Init(char *fileName) {
     Loader = (FileLoader*) (malloc(sizeof(FileLoader)));
-    Loader->yieldPercentage = 5; // TODO, read this value from file
     FILE *settingsFile = fopen(fileName, "r");
     char *line = NULL;
     size_t len = 0;
@@ -32,7 +40,10 @@ void FileLoader_Init(char *fileName) {
     while ((read = getline(&line, &len, settingsFile)) != -1) {
         char *token;
         token = strtok(line, SEPARATOR);
-        if (strcmp(token, TYPE_TAG) == 0) {
+        if(startsWith(COMMENT_TAG, token)){
+            break;
+        }
+        else if (strcmp(token, TYPE_TAG) == 0) {
             token = strtok(NULL, SEPARATOR);
             Loader->preemptive = (int) strtol(token, (char **)NULL, 10);
         } else if (strcmp(token, NUM_THREADS_TAG) == 0) {
@@ -58,11 +69,14 @@ void FileLoader_Init(char *fileName) {
                 work = strtok(NULL, SEPARATOR_LIST);
                 index++;
             }
-        } else if (strcmp(token, LIMIT_TAG) == 0) {
+        } else if (strcmp(token, QUANTUM_TAG) == 0) {
             token = strtok(NULL, SEPARATOR);
             Loader->quantum = (unsigned int) strtol(token, (char **) NULL, 10);
+        } else if(strcmp(token, PERCENTAGE_TAG) == 0){
+            token = strtok(NULL, SEPARATOR);
+            Loader->yieldPercentage = (double) strtold(token, (char **) NULL);
         } else {
-            printf("Unknown setting\n");
+            printf("Unknown setting: %s\n", token);
             exit(EXIT_FAILURE);
         }
     }
@@ -71,3 +85,4 @@ void FileLoader_Init(char *fileName) {
     if (line)
         free(line);
 }
+

@@ -40,6 +40,9 @@ int viewer_show() {
 		return 1;
 	}
 
+	g_signal_connect(G_OBJECT(window), "destroy",
+					 G_CALLBACK(gtk_main_quit), NULL);
+
 	/* Widgets initialization for viewer.ui - DO NOT REMOVE */
 	window_init(builder);
 	g_object_unref(builder);

@@ -1,3 +1,4 @@
+#include <time.h>
 #include "LoteryScheduler.h"
 #include "Timer.h"
 #include "FileLoader.h"
@@ -25,7 +26,7 @@ void LoteryScheduler_Init(long numThreads, void* function, int preemptive, unsig
     Scheduler->preemptive = preemptive;
     Scheduler->completedThreads = 0;
     Scheduler->yieldPercentage = yiedlPercentage/100;
-
+    srand((unsigned int)time(NULL));
     setup_scheduler_timer(quantum);
 
     Scheduler->threads = (Thread **) (malloc(numThreads * sizeof(Thread*)));
