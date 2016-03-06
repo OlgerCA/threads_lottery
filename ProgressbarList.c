@@ -32,14 +32,14 @@ void progressbarlist_item_update(int id, double result, double percentage, int t
 	}
 	
 	char* label = (char*) malloc(sizeof(char)*64);
-	sprintf(label, "Process %i (%d tickets): %3.1f%%", id, tickets, percentage);
+	sprintf(label, "Process %i (%d tickets): %3.1f%%, Pi = %lf ", id, tickets, percentage * 100, result);
 	
 	char* ptext = (char*) malloc(sizeof(char)*32);
 	sprintf(ptext, "%1.15f", result);
 	
 	gtk_label_set_text(GTK_LABEL(progressbarlist_get_label(id)), label);
-	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progressbarlist_get_progressbar(id)), label);
-	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbarlist_get_progressbar(id)), 0.3);
+	// gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progressbarlist_get_progressbar(id)), label);
+	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbarlist_get_progressbar(id)), percentage);
 
 	free(label);
 	free(ptext);

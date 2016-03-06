@@ -1,6 +1,6 @@
 type:0
 numThreads:5
-tickets:1,1,1,1,1,1,1,1,1,100
-work:10,100,1000,10000,2000,10,1000,10,100,1000000
+tickets:100,100,100,100,100
+work:5000000,5000000,5000000,5000000,5000000
 quantum:100
-yieldPercentage:0.035
+yieldPercentage:0.2

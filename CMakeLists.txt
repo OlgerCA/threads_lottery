@@ -8,7 +8,7 @@ find_package(Threads REQUIRED)
 find_package(GTK3 REQUIRED)
 include_directories(${GTK3_INCLUDE_DIRS})
 
-set(SOURCE_FILES main.c ThreadWork.c ThreadWork.h Thread.c LoteryScheduler.c Timer.c Timer.h UI_Callbacks.h UI_Callbacks.c Thread_Callbacks.c Thread_Callbacks.h FileLoader.c FileLoader.h ProgressbarList.c ProgressbarList.h Viewer.c Viewer.h Viewer.callbacks.c Viewer.callbacks.h)
+set(SOURCE_FILES main.c ThreadWork.c ThreadWork.h Thread.c LoteryScheduler.c Timer.c Timer.h UI_Callbacks.h UI_Callbacks.c Thread_Callbacks.c Thread_Callbacks.h FileLoader.c FileLoader.h ProgressbarList.c ProgressbarList.h Viewer.c Viewer.h Viewer.callbacks.c Viewer.callbacks.h SharedState.h SharedState.c)
 add_executable(threads_lottery ${SOURCE_FILES})
 
 set(LIBS ${LIBS} ${GTK3_LIBRARIES} Threads::Threads)

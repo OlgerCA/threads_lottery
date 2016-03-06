@@ -8,14 +8,14 @@ void executeThreadWork(int numberOfUnitsOfWork, void (*updateCallback)(double, d
     int i = 0;
     double accumulatedResult = 0;
     double lastTerm = 2;
-    double percentage = 0;
-    double iterationValue = 1 / (double) numberOfUnitsOfWork;
+    // double percentage = 0;
+    // double iterationValue = 1 / (double) numberOfUnitsOfWork;
 
     for (i = 0; i < numberOfUnitsOfWork; i++) {
         lastTerm = executeUnitOfWork(i * TERMS_PER_UNIT_OF_WORK, lastTerm, &accumulatedResult);
-        percentage += iterationValue;
+        // percentage += iterationValue;
         if (i < (numberOfUnitsOfWork - 1)) {
-            updateCallback(accumulatedResult, percentage, i);
+            updateCallback(accumulatedResult, (double) (i+1) / (double) numberOfUnitsOfWork, i);
         }
     }
     workFinishedCallback(accumulatedResult);
