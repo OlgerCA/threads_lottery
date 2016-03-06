@@ -19,22 +19,27 @@ void LoteryScheduler_Free(LoteryScheduler* this){
 
 //Creates a new Lotery Scheduler
 void LoteryScheduler_Init(long numThreads, void* function, int preemptive, unsigned int quantum, double yiedlPercentage, long* tickets, long* work){
+    FileLoader_DebugPrint();
+    printf("init\n");
     long i = 0;
     Scheduler = (LoteryScheduler*) (malloc(sizeof(LoteryScheduler)));
+    Scheduler->scheduleComplete = 0;
     Scheduler->numThreads = numThreads;
     Scheduler->currentThread = -1; //no current thread yet
     Scheduler->preemptive = preemptive;
     Scheduler->completedThreads = 0;
-    Scheduler->yieldPercentage = yiedlPercentage/100;
+    Scheduler->yieldPercentage = yiedlPercentage;
+    Scheduler->playingTickets = 0;
     srand((unsigned int)time(NULL));
     setup_scheduler_timer(quantum);
 
     Scheduler->threads = (Thread **) (malloc(numThreads * sizeof(Thread*)));
 
     for (; i < numThreads; i++){
-        Scheduler->threads[i] = Thread_New(i, function, tickets[i], work[i], yiedlPercentage/100);
+        Scheduler->threads[i] = Thread_New(i, function, tickets[i], work[i], yiedlPercentage);
         Scheduler->playingTickets += Scheduler->threads[i]->tickets;
     }
+    printf("done_init\n");
 }
 
 // Saves the current thread context
@@ -47,11 +52,15 @@ void LoteryScheduler_ResumeThread(LoteryScheduler* this) {
     if(this->preemptive){
         set_next_alarm();
     }
-    siglongjmp(this->threads[this->currentThread]->context, 1);
+    if(Scheduler->scheduleComplete == 1){
+        siglongjmp(this->threads[this->currentThread]->context, 1);
+    }
+
 }
 
 // The main method of the scheduler
 void LoteryScheduler_Schedule(LoteryScheduler* this){
+    printf("scheduling\n");
     int index;
     long ticketSum = 0;
 
@@ -77,7 +86,8 @@ void LoteryScheduler_Schedule(LoteryScheduler* this){
         }
     }
     this->currentThread = index;
-
+    Scheduler->scheduleComplete = 1;
+    printf("done_scheduling\n");
     if(this->completedThreads < this->numThreads) {
         LoteryScheduler_ResumeThread(this);
     }
