@@ -1,3 +1,4 @@
+#include <glib.h>
 #include "FileLoader.h"
 
 const char *SEPARATOR = ":";
@@ -92,7 +93,7 @@ void FileLoader_Init(char *fileName) {
             Loader->quantum = (unsigned int) strtol(token, (char **) NULL, 10);
         } else if(strcmp(token, PERCENTAGE_TAG) == 0){
             token = strtok(NULL, SEPARATOR);
-            Loader->yieldPercentage = (double) strtold(token, (char **) NULL);
+            Loader->yieldPercentage = g_strtod (token, NULL);
         } else {
             printf("Unknown setting: %s\n", token);
             exit(EXIT_FAILURE);
