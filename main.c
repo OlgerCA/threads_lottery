@@ -6,7 +6,7 @@
 
 int main (int argc, char *argv[])
 {
-    FileLoader_Init("settingsFile"); // copy settings file to output folder
+    FileLoader_Init("settings/settingsFile"); // copy settings file to output folder
 
     //Initialize GTK+
     g_log_set_handler("Gtk", G_LOG_LEVEL_WARNING, (GLogFunc) gtk_false, NULL);
@@ -20,6 +20,3 @@ int main (int argc, char *argv[])
     return 0;
 
 }
-
-
-
