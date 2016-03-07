@@ -1,6 +1,7 @@
 #ifndef THREADS_LOTTERY_LOTERYSCHEDULER_H
 #define THREADS_LOTTERY_LOTERYSCHEDULER_H
 
+#include <sys/ucontext.h>
 #include "Thread.h"
 
 typedef struct {
@@ -11,23 +12,19 @@ typedef struct {
     long completedThreads;
     int playingTickets;
     double yieldPercentage;
-    sigjmp_buf context;
     int scheduleComplete;
+    ucontext_t state;
 }LoteryScheduler;
 
 extern LoteryScheduler* Scheduler;
 
-
-int LoteryScheduler_SaveOwnContext(LoteryScheduler* this); //saves the context of the scheduler
-void LoteryScheduler_ResumesOwnContext(LoteryScheduler* this); //resumes the context of the scheduler
-void LoteryScheduler_Init(long numThreads, void* function, int preemptive, double yiedlPercentage, long* tickets, long* work);
-void LoteryScheduler_Free(LoteryScheduler* this);
-int LoteryScheduler_SaveThread(LoteryScheduler* this); //saves current thread context
-void LoteryScheduler_ResumeThread(LoteryScheduler* this); //resumes current thread
-void LoteryScheduler_Schedule(LoteryScheduler* this);
+void LoteryScheduler_Init(long numThreads, void* function, int preemptive, double yiedlPercentage, long* tickets, long* work, void* exit);
 void LoteryScheduler_ThreadCompletes(LoteryScheduler* this);
-void LoteryScheduler_SwitchThreads(LoteryScheduler this);
-void LoteryScheduler_SaveResult(LoteryScheduler* this, double result);
+void LoteryScheduler_Free(LoteryScheduler* this);
+void LoteryScheduler_Schedule(LoteryScheduler* this);
 long LoteryScheduler_GetWorkOfCurrentThread(LoteryScheduler* this);
+void ThreadCompletes();
+void LoteryScheduler_Yield();
+void Schedule();
 
 #endif //THREADS_LOTTERY_LOTERYSCHEDULER_H

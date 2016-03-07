@@ -27,13 +27,14 @@ typedef struct {
     long tickets;
     long work;
     double yieldPercentage;
-    sigjmp_buf context;
-    char stack[STACK_SIZE];
     int completed;
+    ucontext_t threadContext;
+    int state_reentered;
 }Thread;
 
 
-address_t translate_address(address_t addr);
-Thread* Thread_New(long threadID, void *function, long tickets, long work, double yieldPercentage);
+void make_stack(ucontext_t *ucp);
+
+Thread* Thread_New(long threadID, void *function, long tickets, long work, double yieldPercentage, void* onthreadComplete);
 
 #endif //THREADS_LOTTERY_THREAD_H

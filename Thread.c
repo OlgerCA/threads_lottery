@@ -1,50 +1,42 @@
 #include <signal.h>
 #include "Thread.h"
+#include <sys/mman.h>
+#include <ucontext.h>
 
-Thread* Thread_New(long threadID, void *function, long tickets, long work, double yieldPercentage){
+#define ENV_STACK_SIZE  16384
+
+
+static ucontext_t threadComplete = {0};
+
+Thread* Thread_New(long threadID, void *function, long tickets, long work, double yieldPercentage, void* onthreadComplete) {
     Thread* this = (Thread*) (malloc(sizeof(Thread)));
-    address_t sp, pc;
-
     this->threadID = threadID;
     this->completed = 0;
     this->tickets = tickets;
     this->work = work;
     this->yieldPercentage = yieldPercentage;
 
-    sp = (address_t) this->stack + STACK_SIZE - sizeof(address_t);
-    pc = (address_t) function;
+    if(threadComplete.uc_stack.ss_size != ENV_STACK_SIZE){
+        getcontext(&threadComplete);
+        make_stack(&threadComplete);
+        makecontext(&threadComplete, onthreadComplete, 0);
+    }
 
-    sigsetjmp(this->context,1);
-    (this->context->__jmpbuf)[JB_SP] = translate_address(sp);
-    (this->context->__jmpbuf)[JB_PC] = translate_address(pc);
-    sigemptyset(&this->context->__saved_mask); // initializes saves mask signal to empty
 
+
+    this->threadContext.uc_link = NULL;
+
+    getcontext(&this->threadContext);
+    make_stack(&this->threadContext);
+    this->threadContext.uc_link = &threadComplete;
+    makecontext(&this->threadContext, function, 0);
     return this;
 }
 
-#ifdef __x86_64__ // code for 64 bit Intel arch
-//A translation required when using an address of a variable
-//Use this as a black box in your code.
-address_t translate_address(address_t addr)
-{
-    address_t ret;
-    asm volatile("xor    %%fs:0x30,%0\n"
-            "rol    $0x11,%0\n"
-    : "=g" (ret)
-    : "0" (addr));
-    return ret;
+void make_stack(ucontext_t *ucp) {
+    ucp->uc_stack.ss_sp = mmap(
+            NULL, ENV_STACK_SIZE, PROT_READ | PROT_WRITE,
+            MAP_ANONYMOUS | MAP_GROWSDOWN | MAP_PRIVATE,
+            -1, 0);
+    ucp->uc_stack.ss_size = ENV_STACK_SIZE;
 }
-
-#else
-//A translation required when using an address of a variable
-//Use this as a black box in your code.
-address_t translate_address(address_t addr)
-{
-    address_t ret;
-    asm volatile("xor    %%gs:0x18,%0\n"
-		"rol    $0x9,%0\n"
-                 : "=g" (ret)
-                 : "0" (addr));
-    return ret;
-}
-#endif
