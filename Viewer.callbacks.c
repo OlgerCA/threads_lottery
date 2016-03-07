@@ -15,7 +15,7 @@ void* startBackgroundTask(void* parameters) {
     LoteryScheduler_Yield();
 }
 
-void* exitGreenThreads(){
+void exitGreenThreads(){
     pthread_exit((void *) 0);
 }
 
