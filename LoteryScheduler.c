@@ -18,7 +18,6 @@ void LoteryScheduler_Free(LoteryScheduler* this){
 void LoteryScheduler_Init(long numThreads, void* function, int preemptive, double yiedlPercentage, long* tickets, long* work){
     long i = 0;
     Scheduler = (LoteryScheduler*) (malloc(sizeof(LoteryScheduler)));
-    Scheduler->scheduleComplete = 0;
     Scheduler->numThreads = numThreads;
     Scheduler->currentThread = -1; //no current thread yet
     Scheduler->preemptive = preemptive;
@@ -45,9 +44,7 @@ void LoteryScheduler_ResumeThread(LoteryScheduler* this) {
     if(this->preemptive){
         set_next_alarm();
     }
-    if(Scheduler->scheduleComplete == 1){
-        siglongjmp(this->threads[this->currentThread]->context, 1);
-    }
+    siglongjmp(this->threads[this->currentThread]->context, 1);
 
 }
 
@@ -78,7 +75,7 @@ void LoteryScheduler_Schedule(LoteryScheduler* this){
         }
     }
     this->currentThread = index;
-    Scheduler->scheduleComplete = 1;
+
     if(this->completedThreads < this->numThreads) {
         LoteryScheduler_ResumeThread(this);
     }

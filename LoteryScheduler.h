@@ -12,7 +12,7 @@ typedef struct {
     int playingTickets;
     double yieldPercentage;
     sigjmp_buf context;
-    int scheduleComplete;
+    int mustPreempt;
 }LoteryScheduler;
 
 extern LoteryScheduler* Scheduler;

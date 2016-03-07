@@ -26,8 +26,9 @@ int catch_signal(int sig,void(*handler)(int))
 void invoke_scheduler(int sig)
 {
     if(Scheduler){
-        printf("Thread__: %ld might be preemted\n", Scheduler->currentThread);
-        LoteryScheduler_Schedule(Scheduler);
+        //printf("Thread__: %ld might be preempted\n", Scheduler->currentThread);
+        //LoteryScheduler_Schedule(Scheduler);
+        Scheduler->mustPreempt = 1;
     }
 }
 

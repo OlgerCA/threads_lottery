@@ -6,10 +6,15 @@ void updateSharedState(long threadID, double accuResult, double percentage, int 
     SharedState[threadID].accuResult = accuResult;
     SharedState[threadID].percentage = percentage;
     SharedState[threadID].iteration = iteration;
+    //printf("ThreadID %ld,  iteration: %d\n", threadID, iteration);
 }
 
 void updateCallback_preemptive(double accuResult, double percentage, int iteration){
     updateSharedState(Scheduler->currentThread, accuResult, percentage, iteration);
+    if(Scheduler->mustPreempt) {
+        Scheduler->mustPreempt = 0;
+        LoteryScheduler_Schedule(Scheduler);
+    }
 }
 
 void updateCallback_notPreemptive(double accuResult, double percentage, int iteration){
