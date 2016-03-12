@@ -11,6 +11,10 @@
 #define UI_FILE "ui/viewer.ui"
 #define TOP_WINDOW "window"
 
+GtkWidget* viewer_get_window(GtkBuilder* builder) {
+	return GTK_WIDGET(gtk_builder_get_object(builder, TOP_WINDOW));
+}
+
 GApplication* viewer_new() {
 	return g_application_new("org.gnome.viewer", G_APPLICATION_HANDLES_OPEN);
 }
@@ -33,18 +37,17 @@ int viewer_show() {
 	gtk_builder_connect_signals(builder, viewer);
 
 	/* Get the window object from the ui file */
-	window = GTK_WIDGET(gtk_builder_get_object(builder, TOP_WINDOW));
+	window = viewer_get_window(builder);
 
 	if (!window) {
 		g_critical("Widget \"%s\" is missing in file %s.", TOP_WINDOW, UI_FILE);
 		return 1;
 	}
 
-	g_signal_connect(G_OBJECT(window), "destroy",
-					 G_CALLBACK(gtk_main_quit), NULL);
+	g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
 	/* Widgets initialization for viewer.ui - DO NOT REMOVE */
-	window_init(builder);
+	window_init(GTK_WINDOW(window), builder);
 	g_object_unref(builder);
 
 	/* Enter the main loop */
