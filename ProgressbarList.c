@@ -21,10 +21,11 @@ void progressbarlist_init(GtkBuilder *sender, int length) {
 	for (i=0; i<progressbarlist_length; i++) {
 		gtk_widget_set_visible(GTK_WIDGET(progressbarlist_get_label(i)), 1);
 		gtk_widget_set_visible(GTK_WIDGET(progressbarlist_get_progressbar(i)), 1);
+		gtk_widget_set_visible(GTK_WIDGET(progressbarlist_get_status(i)), 1);
 	}
 }
 /* ---------------------------------------------------------------- */
-void progressbarlist_item_update(int id, double result, double percentage, int tickets) {
+void progressbarlist_item_update(int id, double result, double percentage, int tickets, gboolean finished) {
 	if (id >= progressbarlist_length) {
 		g_critical("Couldn't update item, the thread is not visible (threadid: %d)", id);
 		return;
@@ -35,6 +36,13 @@ void progressbarlist_item_update(int id, double result, double percentage, int t
 	
 	char* ptext = (char*) malloc(sizeof(char)*32);
 	snprintf(ptext, 31, "%1.15f", result);
+
+	gtk_label_set_text(
+		GTK_LABEL(progressbarlist_get_status(id)),
+		percentage != gtk_progress_bar_get_fraction(GTK_PROGRESS_BAR(progressbarlist_get_progressbar(id))) && !finished?
+		"[running]":
+		""
+	);
 	
 	gtk_label_set_text(GTK_LABEL(progressbarlist_get_label(id)), label);
 	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progressbarlist_get_progressbar(id)), percentage);
@@ -51,6 +59,17 @@ GObject* progressbarlist_get_label(int id) {
 	
 	char* name = (char*) malloc(sizeof(char)*8);
 	sprintf(name, "label_%d", id);
+	return gtk_builder_get_object(Builder, name);
+}
+/* ---------------------------------------------------------------- */
+GObject* progressbarlist_get_status(int id) {
+	if (id >= progressbarlist_length) {
+		g_critical("Couldn't get status, the thread is not visible (threadid: %d)", id);
+		return NULL;
+	}
+	
+	char* name = (char*) malloc(sizeof(char)*8);
+	sprintf(name, "status_%d", id);
 	return gtk_builder_get_object(Builder, name);
 }
 /* ---------------------------------------------------------------- */

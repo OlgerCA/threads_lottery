@@ -31,7 +31,7 @@ gboolean update_function(gpointer data) {
         if (entry->percentage != 1) {
             allFinished = false;
 				}
-        progressbarlist_item_update(i, entry->accuResult, entry->percentage, (int) Scheduler->threads[i]->tickets);
+        progressbarlist_item_update(i, entry->accuResult, entry->percentage, (int) Scheduler->threads[i]->tickets, allFinished);
     }
     if (allFinished) {
         free(SharedState);
