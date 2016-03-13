@@ -26,6 +26,7 @@ int catch_signal(int sig,void(*handler)(int))
 
 void invoke_scheduler(int sig)
 {
+//    printf("Timer");
     LoteryScheduler_Yield();
 }
 

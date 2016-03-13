@@ -3,6 +3,7 @@
 #include "LoteryScheduler.h"
 #include "Timer.h"
 #include "Thread.h"
+#include "Viewer.callbacks.h"
 
 
 static ucontext_t exiter = {0};
@@ -30,6 +31,18 @@ void LoteryScheduler_Init(long numThreads, void* function, int preemptive, doubl
     Scheduler->completedThreads = 0;
     Scheduler->yieldPercentage = yiedlPercentage;
     Scheduler->playingTickets = 0;
+
+    getcontext(&exiter);
+    make_stack(&exiter);
+    makecontext(&exiter, exitGreenThreads, 0);
+
+    Scheduler->state.uc_link = NULL;
+
+    getcontext(&Scheduler->state);
+    make_stack(&Scheduler->state);
+    Scheduler->state.uc_link = &exiter;
+    makecontext(&Scheduler->state, function, 0);
+
     srand((unsigned int)time(NULL));
 
     Scheduler->threads = (Thread **) (malloc(numThreads * sizeof(Thread*)));
@@ -79,6 +92,7 @@ void LoteryScheduler_Schedule(LoteryScheduler* this){
     this->currentThread = index;
     Scheduler->scheduleComplete = 1;
     if(this->completedThreads < this->numThreads) {
+        set_next_alarm();
         setcontext(&this->threads[this->currentThread]->threadContext);
     }
 }
