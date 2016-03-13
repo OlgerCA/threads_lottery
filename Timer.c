@@ -27,7 +27,9 @@ void invoke_scheduler(int sig)
 {
     if(Scheduler){
         printf("Thread__: %ld might be preemted\n", Scheduler->currentThread);
-        LoteryScheduler_Schedule(Scheduler);
+        if (sigsetjmp(Scheduler->threads[Scheduler->currentThread]->context, 1) == 0)
+            LoteryScheduler_ResumesOwnContext(Scheduler);
+        //LoteryScheduler_Schedule(Scheduler);
     }
 }
 
