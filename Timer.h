@@ -5,6 +5,7 @@
 extern long selected_quantum;
 
 void setup_scheduler_timer(unsigned int quantum);
+void clear_scheduler_timer();
 
 void set_next_alarm();
 int catch_signal(int sig,void(*handler)(int));

@@ -117,7 +117,7 @@ void btStart_clicked(GtkWidget* btStart, gpointer user_data) {
     pthread_attr_init(&attr);
     if (pthread_create(&backgroundThread, &attr, startBackgroundTask, NULL)) {
         puts("ERROR from pthread_create()");
-		}
+    }
 }
 /* ---------------------------------------------------------------- */
 void btAbout_clicked(GtkWidget* btStart, gpointer user_data) {

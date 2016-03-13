@@ -38,6 +38,10 @@ void setup_scheduler_timer(unsigned int quantum) {
     timer_create(CLOCK_THREAD_CPUTIME_ID, &sigev, &timer);
 }
 
+void clear_scheduler_timer() {
+    timer_delete(timer);
+}
+
 void invoke_scheduler(int signum, siginfo_t *si, void *context)
 {
     swapcontext(&Scheduler->threads[Scheduler->currentThread]->threadContext, &Scheduler->state);

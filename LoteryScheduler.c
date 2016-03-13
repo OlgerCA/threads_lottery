@@ -75,6 +75,8 @@ void LoteryScheduler_Schedule(LoteryScheduler* this){
     long ticketSum = 0;
 
     if(this->completedThreads == this->numThreads){
+        if (this->preemptive)
+            clear_scheduler_timer();
         pthread_exit((void *) 0);
     }
 
