@@ -2,7 +2,6 @@
 #include <ucontext.h>
 #include "LoteryScheduler.h"
 #include "Timer.h"
-#include "Thread.h"
 #include "Viewer.callbacks.h"
 
 
@@ -75,10 +74,8 @@ void LoteryScheduler_Schedule(LoteryScheduler* this){
     int index;
     long ticketSum = 0;
 
-    //setcontext(&this->state);
-
     if(this->completedThreads == this->numThreads){
-        return;
+        pthread_exit((void *) 0);
     }
 
     int random = rand() % this->playingTickets;
@@ -94,7 +91,8 @@ void LoteryScheduler_Schedule(LoteryScheduler* this){
     this->currentThread = index;
     Scheduler->scheduleComplete = 1;
     if(this->completedThreads < this->numThreads) {
-        set_next_alarm();
+        if (this->preemptive)
+            set_next_alarm();
         setcontext(&this->threads[this->currentThread]->threadContext);
     }
 }

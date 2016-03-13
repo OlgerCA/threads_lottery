@@ -1,6 +1,5 @@
 
 #include "ThreadWork.h"
-#include "LoteryScheduler.h"
 
 #define TERMS_PER_UNIT_OF_WORK 50
 

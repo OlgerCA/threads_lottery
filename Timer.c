@@ -2,25 +2,18 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <stdio.h>
-#include <sys/time.h>
 #include <ucontext.h>
 #include <time.h>
-#include <sys/types.h>
 #include <unistd.h>
 #include <sys/syscall.h>
 #include "Timer.h"
 #include "LoteryScheduler.h"
-#include "Thread.h"
 
 #define TIMERSIG SIGRTMIN
 
 long int selected_quantum = 0;
 
 timer_t timer;
-/*const struct itimerspec ts = {
-        {0, 0},
-        {0, 100000000},
-};*/
 
 void setup_scheduler_timer(unsigned int quantum) {
     selected_quantum = quantum;
@@ -43,34 +36,14 @@ void setup_scheduler_timer(unsigned int quantum) {
     sigemptyset(&act.sa_mask);
     sigaction(TIMERSIG, &act, NULL);
     timer_create(CLOCK_THREAD_CPUTIME_ID, &sigev, &timer);
-
-    //catch_signal(SIGALRM, invoke_scheduler);
-}
-
-int catch_signal(int sig,void(*handler)(int))
-{
-    struct sigaction action;
-    action.sa_handler = handler;
-    sigemptyset(&action.sa_mask);
-    action.sa_flags = 0;
-    return sigaction(sig, &action, NULL);
 }
 
 void invoke_scheduler(int signum, siginfo_t *si, void *context)
 {
-    puts("Thread might be preempted");
     swapcontext(&Scheduler->threads[Scheduler->currentThread]->threadContext, &Scheduler->state);
-    // LoteryScheduler_Yield();
 }
 
 void set_next_alarm() {
-    /*struct itimerval new;
-    new.it_interval.tv_usec = 0;
-    new.it_interval.tv_sec = 0;
-    new.it_value.tv_usec = (selected_quantum % 1000) * 1000;
-    new.it_value.tv_sec = selected_quantum / 1000;
-    setitimer (ITIMER_REAL, &new, NULL);*/
-
     struct itimerspec ts;
     ts.it_interval.tv_sec = 0;
     ts.it_interval.tv_nsec = 0;
