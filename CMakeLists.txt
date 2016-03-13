@@ -20,6 +20,7 @@ add_custom_command(TARGET threads_lottery PRE_BUILD
 add_custom_command(TARGET threads_lottery PRE_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/settings $<TARGET_FILE_DIR:threads_lottery>/settings)
+file(COPY icon.jpg icon_96.jpg DESTINATION .)
 
 install(TARGETS threads_lottery DESTINATION bin)
 SET(CPACK_GENERATOR "TGZ")

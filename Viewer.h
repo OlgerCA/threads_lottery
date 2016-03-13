@@ -10,6 +10,7 @@
 #include <gtk/gtk.h>
 
 GApplication* viewer_new();
+GtkWidget* viewer_get_window();
 int viewer_show();
 
 #endif

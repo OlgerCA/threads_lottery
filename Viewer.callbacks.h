@@ -3,9 +3,10 @@
 #ifndef CALLBACKS
 #define CALLBACKS
 
-void window_init(GtkBuilder* sender);
+void window_init(GtkWindow* window, GtkBuilder* sender);
 void file_loader(GtkBuilder *sender);
 void exitGreenThreads();
 void btStart_clicked(GtkWidget* btStart, gpointer user_data);
+void btAbout_clicked(GtkWidget* btStart, gpointer user_data);
 
 #endif

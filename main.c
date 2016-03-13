@@ -23,7 +23,7 @@ int main (int argc, char *argv[])
         LoteryScheduler_Free(Scheduler);
         Scheduler = NULL;
     }
-    if(Loader !=  NULL) {
+    if (Loader !=  NULL) {
         FileLoader_Free(Loader);
         Loader = NULL;
     }
