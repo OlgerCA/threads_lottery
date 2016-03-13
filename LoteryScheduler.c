@@ -4,8 +4,9 @@
 #include "Timer.h"
 #include "Thread.h"
 
+#define ENV_STACK_SIZE  16384
 
-static ucontext_t exiter = {0};
+
 
 LoteryScheduler* Scheduler;
 
@@ -62,6 +63,13 @@ void LoteryScheduler_Schedule(LoteryScheduler* this){
     int index;
     long ticketSum = 0;
 
+    if(this->state.uc_stack.ss_size != ENV_STACK_SIZE){
+        getcontext(&this->state);
+        make_stack(&this->state);
+        // makecontext(&exiter, onthreadComplete, 0);
+    }
+    getcontext(&this->state);
+
     if(this->completedThreads == this->numThreads){
         return;
     }
@@ -79,6 +87,8 @@ void LoteryScheduler_Schedule(LoteryScheduler* this){
     this->currentThread = index;
     Scheduler->scheduleComplete = 1;
     if(this->completedThreads < this->numThreads) {
+        if (this->preemptive)
+            set_next_alarm();
         setcontext(&this->threads[this->currentThread]->threadContext);
     }
 }

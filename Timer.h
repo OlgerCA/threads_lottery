@@ -8,6 +8,6 @@ void setup_scheduler_timer(unsigned int quantum);
 
 void set_next_alarm();
 int catch_signal(int sig,void(*handler)(int));
-void invoke_scheduler(int sig);
+void invoke_scheduler(int signum, siginfo_t *si, void *context);
 
 #endif

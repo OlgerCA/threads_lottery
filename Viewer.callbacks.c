@@ -16,7 +16,7 @@ void* startBackgroundTask(void* parameters) {
 }
 
 void exitGreenThreads(){
-    pthread_exit((void *) 0);
+    // pthread_exit((void *) 0);
 }
 
 gboolean update_function(gpointer data) {
