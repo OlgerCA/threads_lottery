@@ -3,6 +3,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <sys/time.h>
+#include <ucontext.h>
 #include "Timer.h"
 #include "LoteryScheduler.h"
 
@@ -25,10 +26,7 @@ int catch_signal(int sig,void(*handler)(int))
 
 void invoke_scheduler(int sig)
 {
-    if(Scheduler){
-        printf("Thread__: %ld might be preemted\n", Scheduler->currentThread);
-        LoteryScheduler_Schedule(Scheduler);
-    }
+    LoteryScheduler_Yield();
 }
 
 void set_next_alarm() {

@@ -12,10 +12,10 @@
 void* startBackgroundTask(void* parameters) {
     if (Scheduler->preemptive)
         setup_scheduler_timer(Loader->quantum);
-    int retVal = sigsetjmp(Scheduler->context, 1);
-    if (retVal == 1)
-        pthread_exit((void *) 0);
-    LoteryScheduler_Schedule(Scheduler);
+    LoteryScheduler_Yield();
+}
+
+void exitGreenThreads(){
     pthread_exit((void *) 0);
 }
 
@@ -87,11 +87,10 @@ void btStart_clicked(GtkWidget* btStart, gpointer user_data) {
     }
 
     if (Scheduler != NULL) {
-        LoteryScheduler_Free(Scheduler);
         Scheduler = NULL;
     }
     LoteryScheduler_Init(Loader->numThreads, runThread, Loader->preemptive,
-                         Loader->yieldPercentage, Loader->tickets, Loader->work);
+                         Loader->yieldPercentage, Loader->tickets, Loader->work, exitGreenThreads);
 
     GtkWidget* button = GTK_WIDGET(gtk_builder_get_object(Builder, "btStart"));
     gtk_widget_set_sensitive(button, false);
