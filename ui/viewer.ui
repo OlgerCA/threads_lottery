@@ -9,7 +9,7 @@
     <property name="window_position">center</property>
     <property name="default_width">800</property>
     <property name="default_height">400</property>
-    <property name="icon">icon_96.jpg</property>
+    <property name="icon">../icon_96.jpg</property>
     <child>
       <object class="GtkBox" id="wrapper">
         <property name="visible">True</property>

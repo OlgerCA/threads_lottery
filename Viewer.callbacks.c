@@ -73,8 +73,8 @@ void file_loader(GtkBuilder* sender) {
 }
 /* ---------------------------------------------------------------- */
 void window_init(GtkWindow* window, GtkBuilder* sender) {
-    gtk_window_set_icon_from_file(window, "src/icon_96.jpg", NULL);
-    gtk_window_set_default_icon_from_file("src/icon_96.jpg", NULL);
+    gtk_window_set_icon_from_file(window, "icon_96.jpg", NULL);
+    gtk_window_set_default_icon_from_file("icon_96.jpg", NULL);
 	
     file_loader(sender);
     progressbarlist_init(sender, (int) Loader->numThreads);
@@ -136,7 +136,7 @@ void btAbout_clicked(GtkWidget* btStart, gpointer user_data) {
         "Advanced Operating Systems, Project 1."
     );
     
-    GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file("src/icon.png", NULL);
+    GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file("icon.png", NULL);
     gtk_about_dialog_set_logo(dialog, pixbuf);
     g_object_unref(pixbuf);
     pixbuf = NULL; 
