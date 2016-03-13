@@ -1,0 +1,6 @@
+preemptive:1
+numThreads:5
+tickets:10000,10000,100,100,5050
+work:50000000,500000,50000000,500000,2750000
+quantum:10
+yieldPercentage:0.1

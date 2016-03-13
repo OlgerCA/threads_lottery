@@ -1,0 +1,6 @@
+tests:
+0: tests que el profe pidio con bajo quatum/yieldPercentage.
+1: 10 threads, (dos veces los que el profe pidio).
+2: misma cantidad de tickets/work con bajo quantum/yieldPercentage (mas context switch).
+3: misma cantidad de tickets/work con alto quatum/yieldPercentage (menos context switch).
+4: tests que el profe pidio con alto quatum/yieldPercentage.
