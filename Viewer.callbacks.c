@@ -11,16 +11,16 @@
 
 /* ---------------------------------------------------------------- */
 void* startBackgroundTask(void* parameters) {
-    if (Scheduler->preemptive) {
+    if (Scheduler->preemptive)
         setup_scheduler_timer(Loader->quantum);
-		}
-    int retVal = sigsetjmp(Scheduler->context, 1);
-    if (retVal == 1) {
-        pthread_exit((void*) 0);
-		}
     LoteryScheduler_Schedule(Scheduler);
     pthread_exit((void*) 0);
 }
+
+void exitFunction() {
+    return;
+}
+
 /* ---------------------------------------------------------------- */
 gboolean update_function(gpointer data) {
     int i;
@@ -103,7 +103,8 @@ void btStart_clicked(GtkWidget* btStart, gpointer user_data) {
 		    Loader->preemptive,
         Loader->yieldPercentage,
 		    Loader->tickets,
-		    Loader->work
+		    Loader->work,
+            exitFunction
 		);
 
     GtkWidget* button = GTK_WIDGET(gtk_builder_get_object(Builder, "btStart"));
