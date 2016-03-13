@@ -41,7 +41,7 @@ void LoteryScheduler_Init(long numThreads, void* function, int preemptive, doubl
     getcontext(&Scheduler->state);
     make_stack(&Scheduler->state);
     Scheduler->state.uc_link = &exiter;
-    makecontext(&Scheduler->state, function, 0);
+    makecontext(&Scheduler->state, Schedule, 0);
 
     srand((unsigned int)time(NULL));
 
@@ -74,6 +74,8 @@ void Schedule(){
 void LoteryScheduler_Schedule(LoteryScheduler* this){
     int index;
     long ticketSum = 0;
+
+    //setcontext(&this->state);
 
     if(this->completedThreads == this->numThreads){
         return;

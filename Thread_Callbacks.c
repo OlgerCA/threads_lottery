@@ -31,5 +31,5 @@ void runThread() {
     void (*workFinishedCallback)(double) = NULL;
     updateCallback = Scheduler->preemptive ? updateCallback_preemptive : updateCallback_notPreemptive ;
     workFinishedCallback = threadFinishedCallback;
-    executeThreadWork(Scheduler->currentThread, unitsOfWork,updateCallback, workFinishedCallback);
+    executeThreadWork(unitsOfWork,updateCallback, workFinishedCallback);
 }

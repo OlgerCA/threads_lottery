@@ -5,6 +5,9 @@
 #include <sys/time.h>
 #include <ucontext.h>
 #include <time.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <sys/syscall.h>
 #include "Timer.h"
 #include "LoteryScheduler.h"
 #include "Thread.h"
@@ -26,15 +29,20 @@ void setup_scheduler_timer(unsigned int quantum) {
             .sa_sigaction = invoke_scheduler,
             .sa_flags = SA_SIGINFO,
     };
+
+    long tid;
+    tid = syscall(SYS_gettid);
+
     struct sigevent sigev = {
-            .sigev_notify = SIGEV_SIGNAL,
+            .sigev_notify = SIGEV_THREAD_ID,
             .sigev_signo = TIMERSIG,
             .sigev_value.sival_int = 0,
+            ._sigev_un._tid = (__pid_t) tid
     };
 
     sigemptyset(&act.sa_mask);
     sigaction(TIMERSIG, &act, NULL);
-    timer_create(CLOCK_PROCESS_CPUTIME_ID, &sigev, &timer);
+    timer_create(CLOCK_THREAD_CPUTIME_ID, &sigev, &timer);
 
     //catch_signal(SIGALRM, invoke_scheduler);
 }
@@ -50,6 +58,7 @@ int catch_signal(int sig,void(*handler)(int))
 
 void invoke_scheduler(int signum, siginfo_t *si, void *context)
 {
+    puts("Thread might be preempted");
     swapcontext(&Scheduler->threads[Scheduler->currentThread]->threadContext, &Scheduler->state);
     // LoteryScheduler_Yield();
 }
