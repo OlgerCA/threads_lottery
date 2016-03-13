@@ -6,8 +6,6 @@
 #define ENV_STACK_SIZE  16384
 
 
-static ucontext_t exiter = {0};
-
 Thread* Thread_New(long threadID, void *function, long tickets, long work, double yieldPercentage, void* onthreadComplete) {
     Thread* this = (Thread*) (malloc(sizeof(Thread)));
     this->threadID = threadID;
@@ -16,17 +14,10 @@ Thread* Thread_New(long threadID, void *function, long tickets, long work, doubl
     this->work = work;
     this->yieldPercentage = yieldPercentage;
 
-    if(exiter.uc_stack.ss_size != ENV_STACK_SIZE){
-        getcontext(&exiter);
-        make_stack(&exiter);
-        makecontext(&exiter, onthreadComplete, 0);
-    }
-
-    // this->threadContext.uc_link = NULL;
+    this->threadContext.uc_link = NULL;
 
     getcontext(&this->threadContext);
     make_stack(&this->threadContext);
-    this->threadContext.uc_link = &exiter;
     makecontext(&this->threadContext, function, 0);
     return this;
 }
