@@ -1,4 +1,5 @@
 #include <time.h>
+#include <pthread.h>
 #include "LoteryScheduler.h"
 #include "Timer.h"
 
@@ -56,18 +57,11 @@ void LoteryScheduler_Schedule(LoteryScheduler* this){
     int index;
     long ticketSum = 0;
 
-    sigsetjmp(this->context, 1);
-
-    /*if(this->completedThreads == this->numThreads){
-        LoteryScheduler_ResumesOwnContext(this);
-    }*/
-
-    /*if(this->currentThread != -1){
-        int returnValue =  sigsetjmp(Scheduler->threads[Scheduler->currentThread]->context, 1); //LoteryScheduler_SaveThread(Scheduler);
-        if (returnValue == 1) {
-            return;
-        }
-    }*/
+    if(this->completedThreads == this->numThreads) {
+        if (this->preemptive)
+            clear_scheduler_timer();
+        pthread_exit((void *) 0);
+    }
 
     int random = rand() % this->playingTickets;
 
@@ -92,7 +86,10 @@ void LoteryScheduler_ThreadCompletes(LoteryScheduler* this){
     printf("Thread completed: %ld\n", this->currentThread);
     this->completedThreads++;
     this->playingTickets -= this->threads[this->currentThread]->tickets;
-    LoteryScheduler_ResumesOwnContext(this);
+    /*if (this->preemptive)
+        LoteryScheduler_ResumesOwnContext(this);
+    else*/
+        LoteryScheduler_Schedule(this);
 }
 
 //saves the context of the scheduler

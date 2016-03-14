@@ -13,11 +13,8 @@
 void* startBackgroundTask(void* parameters) {
     if (Scheduler->preemptive) {
         setup_scheduler_timer(Loader->quantum);
-		}
-    /*int retVal = sigsetjmp(Scheduler->context, 1);
-    if (retVal == 1) {
-        pthread_exit((void*) 0);
-		}*/
+        sigsetjmp(Scheduler->context, 1);
+    }
     LoteryScheduler_Schedule(Scheduler);
     pthread_exit((void*) 0);
 }

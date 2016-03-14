@@ -1,6 +1,7 @@
 #include "Thread_Callbacks.h"
 #include "LoteryScheduler.h"
 #include "SharedState.h"
+#include "Thread.h"
 
 void updateSharedState(long threadID, double accuResult, double percentage, int iteration) {
     SharedState[threadID].accuResult = accuResult;
@@ -16,7 +17,8 @@ void updateCallback_notPreemptive(double accuResult, double percentage, int iter
     updateSharedState(Scheduler->currentThread, accuResult, percentage, iteration);
     if(percentage >= Scheduler->threads[Scheduler->currentThread]->yieldPercentage){
         Scheduler->threads[Scheduler->currentThread]->yieldPercentage += Scheduler->yieldPercentage;
-        LoteryScheduler_Schedule(Scheduler);
+        if (sigsetjmp(Scheduler->threads[Scheduler->currentThread]->context, 1) == 0)
+            LoteryScheduler_Schedule(Scheduler);
     }
 }
 

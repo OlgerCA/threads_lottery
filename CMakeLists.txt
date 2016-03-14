@@ -12,7 +12,7 @@ set(SOURCE_FILES main.c ThreadWork.c ThreadWork.h Thread.c LoteryScheduler.c Tim
 add_executable(threads_lottery ${SOURCE_FILES})
 
 set(LIBS ${LIBS} ${GTK3_LIBRARIES} Threads::Threads)
-target_link_libraries(threads_lottery ${LIBS})
+target_link_libraries(threads_lottery ${LIBS} rt)
 
 add_custom_command(TARGET threads_lottery PRE_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
